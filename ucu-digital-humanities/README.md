@@ -1,16 +1,53 @@
-# React + Vite
+# 🏛️ Центр цифрової гуманітаристики (React Web Project)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Курсовий проєкт з дисципліни «Веб технології». 
 
-Currently, two official plugins are available:
+## 📋 Огляд проєкту
+Цей проєкт є інтерактивним багатосторінковим веб-додатком, розробленим для Центру цифрової гуманітаристики. Він демонструє використання сучасних фронтенд-технологій для представлення академічного центру, його команди, подій та дослідницьких проєктів.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Технологічний стек
+- **Core:** React 19 + JavaScript (ES6+)
+- **Build Tool:** Vite 5
+- **Routing:** React Router 7
+- **Global State:** React Context API
+- **Styling:** Vanilla CSS (з використанням CSS Variables)
+- **API Data Source:** JSONPlaceholder (Mock API)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Функціональні можливості (Відповідність вимогам)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Вимога | Реалізація в коді |
+| :--- | :--- |
+| **Багатосторінковість** | 5 сторінок (Головна, Про центр, Команда, Події, Проєкти) |
+| **Маршрутизація** | Використання `react-router-dom` в [App.jsx](src/App.jsx) |
+| **React-компоненти** | Створено 3+ компоненти: `Navbar`, `Footer`, `Card` |
+| **Передача Props** | Компонент `Card` приймає дані через props на всіх сторінках |
+| **Керування станом (useState)** | Форма зворотного зв'язку та FAQ-акордеон у [About.jsx](src/pages/About.jsx) |
+| **Робота з API (fetch)** | Отримання списку проєктів через `fetch` у [Projects.jsx](src/pages/Projects.jsx) |
+| **Глобальний стан (Context)** | Dark/Light Mode реалізовано через [GlobalContext.jsx](src/context/GlobalContext.jsx) |
+
+---
+
+## 📂 Структура проєкту
+- `src/components/` — Перевикористовувані UI-компоненти.
+- `src/context/` — Глобальний стан додатка (Context API).
+- `src/pages/` — Основні сторінки додатка.
+- `src/index.css` — Глобальні стилі та дизайн-система (змінні, анімації).
+
+---
+
+## 💡 Особливості реалізації (Для захисту)
+1. **Пошук та фільтрація:** На сторінці "Проєкти" реалізовано динамічний пошук, який фільтрує дані, отримані з API, у реальному часі.
+2. **Анімації:** Використання CSS `@keyframes` для плавного завантаження сторінок (Fade-in effect).
+3. **Темна тема:** Повноцінна підтримка Dark Mode, що зберігається в `localStorage` браузера.
+4. **Адаптивний дизайн:** Сайт коректно відображається на мобільних пристроях та десктопах завдяки CSS Grid та Flexbox.
+
+---
+
+## ⚙️ Як запустити локально
+1. Встановіть залежності: `npm install`
+2. Запустіть сервер розробки: `npm run dev`
+3. Відкрийте `http://localhost:5173/` у браузері.
