@@ -2,10 +2,8 @@ import { useState } from 'react';
 import './About.css';
 
 export default function About() {
-  /* REQUIREMENT: Managing form state using useState */
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
-  /* REQUIREMENT: Managing complex state for interactivity (Accordion) */
   const [activeFaq, setActiveFaq] = useState(null);
 
   const handleChange = (e) => {
@@ -83,7 +81,6 @@ export default function About() {
       </section>
 
       <section className="contact-section">
-        {/* REQUIREMENT: Form implementation with state handling */}
         <h2>Зв'язатися з нами</h2>
         {submitted ? (
           <div className="success-message">Дякуємо за ваше повідомлення! Ми зв'яжемося з вами найближчим часом.</div>

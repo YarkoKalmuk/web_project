@@ -1,0 +1,138 @@
+.home-page {
+  text-align: center;
+}
+
+.hero-section {
+  padding: 5rem 2rem;
+  margin-bottom: 3rem;
+  background: var(--gradient-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.hero-description {
+  font-size: 1.3rem;
+  max-width: 800px;
+  margin: 0 auto 2.5rem auto;
+  opacity: 0.9;
+  line-height: 1.8;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-buttons button {
+  font-size: 1.1rem;
+  padding: 1rem 2.5rem;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Statistics */
+.stats-section {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 3rem 0;
+  margin-bottom: 4rem;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.stat-number {
+  font-size: 3rem;
+  color: var(--primary);
+  margin: 0;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+/* Directions grid */
+.directions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  text-align: left;
+  margin-bottom: 4rem;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 4rem 2rem;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.cta-section h2 {
+  margin-bottom: 1rem;
+}
+
+.cta-section p {
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  opacity: 0.8;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 1.25rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .hero-buttons button {
+    font-size: 0.95rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .stat-label {
+    font-size: 0.95rem;
+  }
+
+  .directions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-section {
+    padding: 2.5rem 1.25rem;
+  }
+}

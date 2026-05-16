@@ -43,12 +43,14 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow-x: hidden;
 }
 
 /* Page entrance animation */
@@ -70,6 +72,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
   font-weight: 600;
   line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 p {
@@ -132,3 +136,16 @@ button:active {
   background-color: var(--primary);
   border-radius: 2px;
 }
+
+/* ── Mobile responsive global ── */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 2rem 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+}
+

@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 
-/* REQUIREMENT: Mechanism for Global State Management (Context API) */
 export const GlobalContext = createContext();
 
 export function GlobalProvider({ children }) {

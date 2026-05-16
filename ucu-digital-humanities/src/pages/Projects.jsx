@@ -10,7 +10,6 @@ export default function Projects() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    /* REQUIREMENT: Fetching data from an external API */
     const fetchProjects = async () => {
       try {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=8');

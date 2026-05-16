@@ -8,12 +8,13 @@ import About from './pages/About';
 import Team from './pages/Team';
 import Events from './pages/Events';
 import Projects from './pages/Projects';
+import Login from './pages/Login';
+import EventForm from './pages/EventForm';
 
 function App() {
   return (
     <>
       <Navbar />
-      {/* REQUIREMENT: Multi-page Routing Implementation */}
       <main className="content-container">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -21,6 +22,9 @@ function App() {
           <Route path="/team" element={<Team />} />
           <Route path="/events" element={<Events />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/events/create" element={<EventForm />} />
+          <Route path="/events/edit/:id" element={<EventForm />} />
         </Routes>
       </main>
       <Footer />

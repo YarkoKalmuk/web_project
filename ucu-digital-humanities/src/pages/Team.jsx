@@ -3,22 +3,28 @@ import Card from '../components/Card/Card';
 export default function Team() {
   const teamMembers = [
     {
-      name: "Олександр Коваленко",
-      role: "Керівник центру",
-      bio: "Доктор історичних наук, фахівець з цифрових методів в історії.",
-      image: "https://picsum.photos/seed/alex/400/300"
+      name: "Yulian Zaiats",
+      role: "CEO and lead developer",
+      bio: "Керівник проєкту, головний розробник та архітектор системи.",
+      image: "/team/Yulian_Zaiats.png"
     },
     {
-      name: "Марія Мельник",
-      role: "Провідний дослідник",
-      bio: "Експертка з комп'ютерної лінгвістики та аналізу текстів.",
-      image: "https://picsum.photos/seed/maria/400/300"
+      name: "Yaropolk Kalmuk",
+      role: "Part-time intern",
+      bio: "Emotional support.",
+      image: "/team/Yaropolk_Kalmuk.png"
     },
     {
-      name: "Іван Бойко",
-      role: "Data Scientist",
-      bio: "Розробник архітектури баз даних та алгоритмів машинного навчання.",
-      image: "https://picsum.photos/seed/ivan/400/300"
+      name: "Nazar Mykolaychuk",
+      role: "Part-time intern",
+      bio: "Emotional support.",
+      image: "/team/Nazar_Mykolaychuk.png"
+    },
+    {
+      name: "Marko Zenon",
+      role: "Part-time intern",
+      bio: "Emotional support.",
+      image: "/team/Marko_Zenon.png"
     }
   ];
 
