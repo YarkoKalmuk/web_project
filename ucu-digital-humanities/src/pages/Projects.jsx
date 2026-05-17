@@ -54,22 +54,6 @@ export default function Projects() {
   };
 
   return (
-    // <div className="projects-page">
-    //   <div className="projects-header">
-    //     <h1 className="section-title">Наші проєкти</h1>
-    //     <p style={{ marginBottom: '2rem' }}>Ознайомтеся з останніми дослідженнями та розробками нашого центру.</p>
-        
-    //     <div className="search-container">
-    //       <input 
-    //         type="text" 
-    //         placeholder="Пошук проєктів..." 
-    //         value={searchQuery}
-    //         onChange={handleSearch}
-    //         className="search-input"
-    //       />
-    //     </div>
-    //   </div>
-
     <div className="projects-page">
       <h1 className="section-title">Наші проєкти</h1>
       <div className="projects-header">
