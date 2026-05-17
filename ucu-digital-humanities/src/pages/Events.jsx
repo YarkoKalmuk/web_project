@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import Card from '../components/Card/Card';
 import { useEvents } from '../context/EventsContext';
@@ -11,6 +12,7 @@ export default function Events() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     fetchEvents(searchQuery, 1);
@@ -19,7 +21,6 @@ export default function Events() {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchInput(value);
-    // Debounce: update search query after user stops typing
     clearTimeout(window._searchTimeout);
     window._searchTimeout = setTimeout(() => {
       setSearchQuery(value);
@@ -133,7 +134,6 @@ export default function Events() {
             </div>
           )}
 
-          {/* Pagination */}
           {pagination.totalPages > 1 && (
             <div className="pagination">
               <button
@@ -170,6 +170,29 @@ export default function Events() {
             Показано {events.length} з {pagination.total} подій
           </div>
         </>
+      )}
+
+      <div className="past-events-gallery-section">
+        <h2 className="section-title" style={{ marginTop: '2rem' }}>Фото з минулих подій</h2>
+        <div className="photo-gallery">
+          {Array.from({ length: 21 }, (_, i) => i + 1).map((num) => (
+            <div key={num} className="gallery-item" onClick={() => setSelectedPhoto(num)}>
+              <img src={`/event_photos/${num}.jpg`} alt={`Past event ${num}`} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {selectedPhoto && createPortal(
+        <div className="photo-modal" onClick={() => setSelectedPhoto(null)}>
+          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="photo-modal-close" onClick={() => setSelectedPhoto(null)} aria-label="Close">
+              &times;
+            </button>
+            <img src={`/event_photos/${selectedPhoto}.jpg`} alt={`Enlarged event ${selectedPhoto}`} />
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );

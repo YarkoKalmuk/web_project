@@ -6,12 +6,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On mount, check if we have a saved user session
   useEffect(() => {
     const savedUser = localStorage.getItem('auth-user');
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
-      // Verify the user still exists in DB
       fetch('/api/me', {
         headers: { 'x-user-id': parsed.id },
       })
@@ -71,10 +69,32 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('auth-user');
   };
 
+  const updateAvatar = async (avatarUrl) => {
+    if (!user) return;
+    const res = await fetch('/api/me/avatar', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-id': user.id
+      },
+      body: JSON.stringify({ avatar_url: avatarUrl }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to update avatar');
+    }
+
+    const data = await res.json();
+    setUser(data.user);
+    localStorage.setItem('auth-user', JSON.stringify(data.user));
+    return data.user;
+  };
+
   const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateAvatar, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

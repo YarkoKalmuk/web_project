@@ -6,13 +6,8 @@ const app = express();
 const PORT = 3001;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
-// ════════════════════════════════════════════════════════════════
-// AUTH ENDPOINTS
-// ════════════════════════════════════════════════════════════════
-
-// POST /api/login — authenticate user
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -21,7 +16,7 @@ app.post('/api/login', (req, res) => {
   }
 
   const user = db.prepare(
-    'SELECT id, username, role FROM users WHERE username = ? AND password = ?'
+    'SELECT id, username, role, created_at, avatar_url FROM users WHERE username = ? AND password = ?'
   ).get(username, password);
 
   if (!user) {
@@ -31,7 +26,6 @@ app.post('/api/login', (req, res) => {
   res.json({ user });
 });
 
-// POST /api/register — create a new user account
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
 
@@ -49,21 +43,20 @@ app.post('/api/register', (req, res) => {
   }
 
   const result = db.prepare(
-    'INSERT INTO users (username, password, role) VALUES (?, ?, ?)'
+    "INSERT INTO users (username, password, role, created_at) VALUES (?, ?, ?, datetime('now', 'localtime'))"
   ).run(username, password, 'user');
 
-  const user = db.prepare('SELECT id, username, role FROM users WHERE id = ?').get(result.lastInsertRowid);
+  const user = db.prepare('SELECT id, username, role, created_at, avatar_url FROM users WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json({ user });
 });
 
-// GET /api/me — get current user info (simple check)
 app.get('/api/me', (req, res) => {
   const userId = req.headers['x-user-id'];
   if (!userId) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  const user = db.prepare('SELECT id, username, role FROM users WHERE id = ?').get(userId);
+  const user = db.prepare('SELECT id, username, role, created_at, avatar_url FROM users WHERE id = ?').get(userId);
   if (!user) {
     return res.status(401).json({ error: 'User not found' });
   }
@@ -71,31 +64,48 @@ app.get('/api/me', (req, res) => {
   res.json({ user });
 });
 
-// ════════════════════════════════════════════════════════════════
-// EVENTS ENDPOINTS
-// ════════════════════════════════════════════════════════════════
+app.put('/api/me/avatar', (req, res) => {
+  const userId = req.headers['x-user-id'];
+  if (!userId) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
 
-// GET /api/events — list all events (with optional search & pagination)
+  const { avatar_url } = req.body;
+  if (!avatar_url) {
+    return res.status(400).json({ error: 'Avatar URL is required' });
+  }
+
+  db.prepare('UPDATE users SET avatar_url = ? WHERE id = ?').run(avatar_url, userId);
+  const user = db.prepare('SELECT id, username, role, created_at, avatar_url FROM users WHERE id = ?').get(userId);
+
+  res.json({ user });
+});
+
 app.get('/api/events', (req, res) => {
   const { search, page = 1, limit = 6 } = req.query;
   const offset = (parseInt(page) - 1) * parseInt(limit);
 
-  let countQuery = 'SELECT COUNT(*) as total FROM events';
-  let dataQuery = 'SELECT * FROM events';
-  const params = [];
+  let allEvents = db.prepare('SELECT * FROM events ORDER BY date ASC').all();
 
   if (search) {
-    const filter = ' WHERE title LIKE ? OR description LIKE ?';
-    const searchParam = `%${search}%`;
-    countQuery += filter;
-    dataQuery += filter;
-    params.push(searchParam, searchParam);
+    const s = search.toLowerCase();
+    allEvents = allEvents.filter(e => {
+      const d = new Date(e.date);
+      const dateStrUk = d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' }).toLowerCase();
+      const dateStrEn = d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).toLowerCase();
+      
+      return (
+        e.title.toLowerCase().includes(s) ||
+        e.description.toLowerCase().includes(s) ||
+        e.date.includes(s) ||
+        dateStrUk.includes(s) ||
+        dateStrEn.includes(s)
+      );
+    });
   }
 
-  dataQuery += ' ORDER BY date ASC LIMIT ? OFFSET ?';
-
-  const total = db.prepare(countQuery).get(...params).total;
-  const events = db.prepare(dataQuery).all(...params, parseInt(limit), offset);
+  const total = allEvents.length;
+  const events = allEvents.slice(offset, offset + parseInt(limit));
 
   res.json({
     events,
@@ -108,7 +118,6 @@ app.get('/api/events', (req, res) => {
   });
 });
 
-// GET /api/events/:id — get single event
 app.get('/api/events/:id', (req, res) => {
   const event = db.prepare('SELECT * FROM events WHERE id = ?').get(req.params.id);
   if (!event) {
@@ -117,7 +126,6 @@ app.get('/api/events/:id', (req, res) => {
   res.json({ event });
 });
 
-// POST /api/events — create event (admin only)
 app.post('/api/events', (req, res) => {
   const userId = req.headers['x-user-id'];
   const user = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
@@ -138,7 +146,6 @@ app.post('/api/events', (req, res) => {
   res.status(201).json({ event });
 });
 
-// PUT /api/events/:id — update event (admin only)
 app.put('/api/events/:id', (req, res) => {
   const userId = req.headers['x-user-id'];
   const user = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
@@ -166,7 +173,6 @@ app.put('/api/events/:id', (req, res) => {
   res.json({ event });
 });
 
-// DELETE /api/events/:id — delete event (admin only)
 app.delete('/api/events/:id', (req, res) => {
   const userId = req.headers['x-user-id'];
   const user = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
@@ -183,7 +189,35 @@ app.delete('/api/events/:id', (req, res) => {
   res.json({ message: 'Event deleted' });
 });
 
-// ════════════════════════════════════════════════════════════════
+app.post('/api/messages', (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Name, email, and message are required' });
+  }
+
+  try {
+    const result = db.prepare(
+      "INSERT INTO messages (name, email, message) VALUES (?, ?, ?)"
+    ).run(name, email, message);
+
+    const savedMessage = db.prepare('SELECT * FROM messages WHERE id = ?').get(result.lastInsertRowid);
+    res.status(201).json({ success: true, message: savedMessage });
+  } catch (error) {
+    console.error('Error saving message:', error);
+    res.status(500).json({ error: 'Failed to save message to database' });
+  }
+});
+
+app.get('/api/messages', (req, res) => {
+  try {
+    const messages = db.prepare('SELECT * FROM messages ORDER BY created_at DESC').all();
+    res.json({ messages });
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

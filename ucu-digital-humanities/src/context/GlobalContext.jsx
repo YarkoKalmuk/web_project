@@ -6,7 +6,6 @@ export function GlobalProvider({ children }) {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    // Check local storage or system preference on mount
     const savedTheme = localStorage.getItem('app-theme');
     if (savedTheme) {
       setTheme(savedTheme);
@@ -16,7 +15,6 @@ export function GlobalProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    // Apply theme class to body and save to local storage
     document.body.className = theme;
     localStorage.setItem('app-theme', theme);
   }, [theme]);
@@ -32,7 +30,6 @@ export function GlobalProvider({ children }) {
   );
 }
 
-// Custom hook for easier consumption
 export function useGlobalContext() {
   return useContext(GlobalContext);
 }

@@ -43,14 +43,14 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Page entrance animation */

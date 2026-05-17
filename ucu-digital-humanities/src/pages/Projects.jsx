@@ -38,7 +38,6 @@ export default function Projects() {
     fetchProjects();
   }, []);
 
-  // Handle Search Filtering
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
@@ -60,7 +59,6 @@ export default function Projects() {
         <h1 className="section-title">Наші проєкти</h1>
         <p style={{ marginBottom: '2rem' }}>Ознайомтеся з останніми дослідженнями та розробками нашого центру.</p>
         
-        {/* Creative addition: Search Bar using useState */}
         <div className="search-container">
           <input 
             type="text" 

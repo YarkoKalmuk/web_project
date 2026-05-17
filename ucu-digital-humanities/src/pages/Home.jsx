@@ -6,24 +6,28 @@ export default function Home() {
   return (
     <div className="home-page">
       <section className="hero-section">
-        <h1 className="hero-title">
-          Центр цифрової гуманітаристики
-        </h1>
-        <p className="hero-description">
-          Ми поєднуємо новітні цифрові технології з традиційними гуманітарними дослідженнями.
-          Наша місія — збереження культурної спадщини та відкриття нових горизонтів знань за допомогою Data Science, ШІ та ГІС технологій.
-        </p>
-        <div className="hero-buttons">
-          <Link to="/projects">
-            <button>Наші проєкти</button>
-          </Link>
-          <Link to="/about">
-            <button className="btn-outline">Дізнатися більше</button>
-          </Link>
+        <div className="hero-banner">
+          <img src="/DH_representing_photos/rectanlge_DH.jpg" alt="UCU Centre for Digital Humanities Banner" />
+        </div>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            Центр цифрової гуманітаристики
+          </h1>
+          <p className="hero-description">
+            Ми поєднуємо новітні цифрові технології з традиційними гуманітарними дослідженнями.
+            Наша місія — збереження культурної спадщини та відкриття нових горизонтів знань за допомогою Data Science, ШІ та ГІС технологій.
+          </p>
+          <div className="hero-buttons">
+            <Link to="/projects">
+              <button>Наші проєкти</button>
+            </Link>
+            <Link to="/about">
+              <button className="btn-outline">Дізнатися більше</button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Statistics Section */}
       <section className="stats-section">
         <div>
           <h2 className="stat-number">15+</h2>
@@ -58,7 +62,6 @@ export default function Home() {
         />
       </div>
       
-      {/* Call to Action */}
       <section className="cta-section">
         <h2>Готові до співпраці?</h2>
         <p>

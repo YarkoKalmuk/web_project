@@ -7,18 +7,29 @@ const __dirname = dirname(__filename);
 
 const db = new Database(join(__dirname, 'db', 'database.sqlite'));
 
-// Enable WAL mode for better performance
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
-// ── Create tables ──────────────────────────────────────────────
+const columns = db.pragma('table_info(users)');
+if (columns.length > 0) {
+  const hasCreatedAt = columns.some(c => c.name === 'created_at');
+  if (!hasCreatedAt) {
+    db.exec("ALTER TABLE users ADD COLUMN created_at TEXT");
+  }
+  const hasAvatarUrl = columns.some(c => c.name === 'avatar_url');
+  if (!hasAvatarUrl) {
+    db.exec("ALTER TABLE users ADD COLUMN avatar_url TEXT");
+  }
+}
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id    INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role     TEXT NOT NULL DEFAULT 'user'
+    role     TEXT NOT NULL DEFAULT 'user',
+    created_at TEXT DEFAULT (datetime('now', 'localtime')),
+    avatar_url TEXT
   );
 
   CREATE TABLE IF NOT EXISTS events (
@@ -29,9 +40,15 @@ db.exec(`
     image_url   TEXT,
     created_at  TEXT DEFAULT (datetime('now'))
   );
-`);
 
-// ── Seed default data (only if tables are empty) ───────────────
+  CREATE TABLE IF NOT EXISTS messages (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    email       TEXT NOT NULL,
+    message     TEXT NOT NULL,
+    created_at  TEXT DEFAULT (datetime('now', 'localtime'))
+  );
+`);
 
 const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
 if (userCount.count === 0) {

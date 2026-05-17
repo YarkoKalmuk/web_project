@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { useAuth } from '../../context/AuthContext';
+import ProfileModal from '../ProfileModal/ProfileModal';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -9,6 +10,7 @@ export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const links = [
     { path: '/', label: 'Головна' },
@@ -21,10 +23,14 @@ export default function Navbar() {
   const toggleMenu = () => setMenuOpen(prev => !prev);
   const closeMenu = () => setMenuOpen(false);
 
+  const defaultAvatar = user ? `https://ui-avatars.com/api/?name=${user.username}&background=random` : '';
+
   return (
-    <nav className="navbar">
+    <>
+      <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" onClick={closeMenu}>
+          <img src="/DH_representing_photos/circle_DH.jpg" alt="Logo" className="navbar-logo-img" />
           ЦЦГ
         </Link>
 
@@ -55,6 +61,13 @@ export default function Navbar() {
           {user ? (
             <div className="auth-controls">
               {isAdmin && <span className="admin-badge">Адмін</span>}
+              <button 
+                onClick={() => setProfileModalOpen(true)} 
+                className="profile-nav-btn"
+                title="Мій профіль"
+              >
+                <img src={user.avatar_url || defaultAvatar} alt="Profile" />
+              </button>
               <button onClick={() => { logout(); closeMenu(); }} className="auth-btn logout-btn">
                 Вийти
               </button>
@@ -67,5 +80,10 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+    <ProfileModal 
+      isOpen={profileModalOpen} 
+      onClose={() => setProfileModalOpen(false)} 
+    />
+    </>
   );
 }

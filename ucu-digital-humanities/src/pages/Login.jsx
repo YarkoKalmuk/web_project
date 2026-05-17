@@ -12,7 +12,6 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // If already logged in, show a message
   if (user) {
     return (
       <div className="login-page">

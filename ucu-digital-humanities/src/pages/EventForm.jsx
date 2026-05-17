@@ -21,14 +21,12 @@ export default function EventForm() {
   const [fetchingEvent, setFetchingEvent] = useState(isEdit);
   const [error, setError] = useState('');
 
-  // Redirect non-admin users
   useEffect(() => {
     if (!authLoading && !isAdmin) {
       navigate('/login');
     }
   }, [isAdmin, authLoading, navigate]);
 
-  // Load event data for editing
   useEffect(() => {
     if (isEdit) {
       setFetchingEvent(true);
