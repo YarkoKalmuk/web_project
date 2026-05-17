@@ -56,7 +56,6 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="login-icon">{isRegisterMode ? '📝' : '🔐'}</div>
         <h1 className="login-title">
           {isRegisterMode ? 'Реєстрація' : 'Вхід'}
         </h1>

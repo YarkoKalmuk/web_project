@@ -48,20 +48,20 @@ export default function Home() {
         <Card 
           title="Цифрові архіви" 
           description="Створення та підтримка відкритих цифрових баз даних та архівів історичних документів з використанням OCR технологій."
-          imageUrl="https://picsum.photos/seed/archive/400/200"
+          imageUrl="/home/archives.png"
         />
         <Card 
           title="Аналіз текстів" 
           description="Використання методів машинного навчання (NLP) для аналізу великих масивів літературних творів та періодики."
-          imageUrl="https://picsum.photos/seed/text/400/200"
+          imageUrl="/home/text_analysis.png"
         />
         <Card 
           title="Просторова історія" 
           description="Геоінформаційні системи (ГІС) для візуалізації історичних подій, соціальних процесів та демографічних змін."
-          imageUrl="https://picsum.photos/seed/map/400/200"
+          imageUrl="/home/hist_event.png"
         />
       </div>
-      
+
       <section className="cta-section">
         <h2>Готові до співпраці?</h2>
         <p>

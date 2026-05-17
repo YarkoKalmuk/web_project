@@ -143,6 +143,7 @@ body.dark .login-form .form-group input:focus {
 }
 
 .switch-btn:hover {
+  background: transparent !important;
   color: var(--primary-hover);
   transform: none;
   box-shadow: none;
