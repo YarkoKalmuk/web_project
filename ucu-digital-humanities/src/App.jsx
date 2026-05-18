@@ -10,6 +10,7 @@ import Events from './pages/Events';
 import Projects from './pages/Projects';
 import Login from './pages/Login';
 import EventForm from './pages/EventForm';
+import ProjectForm from './pages/ProjectForm';
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/events/create" element={<EventForm />} />
           <Route path="/events/edit/:id" element={<EventForm />} />
+          <Route path="/projects/create" element={<ProjectForm />} />
+          <Route path="/projects/edit/:id" element={<ProjectForm />} />
         </Routes>
       </main>
       <Footer />

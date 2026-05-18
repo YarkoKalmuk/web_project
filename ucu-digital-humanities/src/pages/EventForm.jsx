@@ -16,6 +16,7 @@ export default function EventForm() {
     description: '',
     date: '',
     image_url: '',
+    location: '',
   });
   const [loading, setLoading] = useState(false);
   const [fetchingEvent, setFetchingEvent] = useState(isEdit);
@@ -37,6 +38,7 @@ export default function EventForm() {
             description: event.description,
             date: event.date,
             image_url: event.image_url || '',
+            location: event.location || '',
           });
         })
         .catch(() => {
@@ -84,10 +86,10 @@ export default function EventForm() {
     <div className="event-form-page">
       <div className="event-form-card">
         <h1 className="form-title">
-          {isEdit ? '✏️ Редагувати подію' : '✨ Створити нову подію'}
+          {isEdit ? 'Редагувати подію' : 'Створити нову подію'}
         </h1>
 
-        {error && <div className="form-error">❌ {error}</div>}
+        {error && <div className="form-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
           <div className="form-group">
@@ -130,16 +132,29 @@ export default function EventForm() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="event-image">URL зображення</label>
+              <label htmlFor="event-location">Місце проведення *</label>
               <input
-                type="url"
-                id="event-image"
-                name="image_url"
-                value={formData.image_url}
+                type="text"
+                id="event-location"
+                name="location"
+                value={formData.location}
                 onChange={handleChange}
-                placeholder="https://example.com/image.jpg"
+                placeholder="Наприклад: Центр Шептицького, Конференц-зал"
+                required
               />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="event-image">URL зображення</label>
+            <input
+              type="url"
+              id="event-image"
+              name="image_url"
+              value={formData.image_url}
+              onChange={handleChange}
+              placeholder="https://example.com/image.jpg"
+            />
           </div>
 
           {formData.image_url && (

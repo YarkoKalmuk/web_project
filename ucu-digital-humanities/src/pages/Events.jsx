@@ -13,10 +13,72 @@ export default function Events() {
   const [searchInput, setSearchInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [selectedTag, setSelectedTag] = useState('Усі');
+  const [eventTags, setEventTags] = useState(() => {
+    const saved = localStorage.getItem('event_custom_tags');
+    return saved ? JSON.parse(saved) : ['Усі', 'Травень', 'Червень', 'Липень'];
+  });
+  const [showAddInput, setShowAddInput] = useState(false);
+  const [newTagName, setNewTagName] = useState('');
 
   useEffect(() => {
     fetchEvents(searchQuery, 1);
   }, [searchQuery, fetchEvents]);
+
+  const clearSearch = () => {
+    setSearchInput('');
+    setSearchQuery('');
+  };
+
+  const handleTagClick = (tag) => {
+    setSelectedTag(tag);
+  };
+
+  const handleAddEventTagInline = (e) => {
+    if (e) e.preventDefault();
+    if (newTagName && newTagName.trim() !== '') {
+      const trimmed = newTagName.trim();
+      if (eventTags.includes(trimmed)) {
+        alert('Такий фільтр вже існує!');
+        return;
+      }
+      const updated = [...eventTags, trimmed];
+      setEventTags(updated);
+      localStorage.setItem('event_custom_tags', JSON.stringify(updated));
+      setNewTagName('');
+      setShowAddInput(false);
+    }
+  };
+
+  const handleRemoveEventTag = (e, tagToRemove) => {
+    e.stopPropagation();
+    if (tagToRemove === 'Усі') return;
+    const updated = eventTags.filter(t => t !== tagToRemove);
+    setEventTags(updated);
+    localStorage.setItem('event_custom_tags', JSON.stringify(updated));
+    if (selectedTag === tagToRemove) {
+      setSelectedTag('Усі');
+    }
+  };
+
+  const filteredEvents = events.filter(event => {
+    if (selectedTag === 'Усі') return true;
+    
+    // Default month filters
+    const eventDate = new Date(event.date);
+    const month = eventDate.getMonth(); // 4 = May, 5 = June, 6 = July
+    if (selectedTag === 'Травень') return month === 4;
+    if (selectedTag === 'Червень') return month === 5;
+    if (selectedTag === 'Липень') return month === 6;
+
+    // Custom dynamic filters (match on title, description, or date string)
+    const lowerTag = selectedTag.toLowerCase();
+    return (
+      event.title.toLowerCase().includes(lowerTag) ||
+      event.description.toLowerCase().includes(lowerTag) ||
+      event.date.includes(selectedTag)
+    );
+  });
 
   const handleSearch = (e) => {
     const value = e.target.value;
@@ -59,23 +121,96 @@ export default function Events() {
           Долучайтеся до наших заходів, воркшопів та лекцій.
         </p>
 
-        <div className="events-toolbar">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Пошук подій..."
-              value={searchInput}
-              onChange={handleSearch}
-              className="search-input"
-              id="events-search"
-            />
-          </div>
-
-          {isAdmin && (
+        {isAdmin && (
+          <div className="admin-action-bar">
             <Link to="/events/create" className="btn-create">
               + Створити подію
             </Link>
+          </div>
+        )}
+      </div>
+
+      <div className="premium-search-wrapper glassmorphism">
+        <div className="search-bar-container">
+          <span className="search-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </span>
+          <input
+            type="text"
+            placeholder="Пошук майбутніх подій, лекцій та воркшопів..."
+            value={searchInput}
+            onChange={handleSearch}
+            className="premium-search-input"
+            id="events-search"
+          />
+          {searchInput && (
+            <button onClick={clearSearch} className="clear-search-btn" title="Очистити пошук">×</button>
           )}
+        </div>
+
+        {/* Категорійні швидкі теги для дат/місяців */}
+        <div className="quick-tags-container">
+          <span className="tags-label">Швидкий фільтр:</span>
+          <div className="quick-tags-list">
+            {eventTags.map((tag) => {
+              const isDefault = tag === 'Усі';
+              return (
+                <button
+                  key={tag}
+                  className={`quick-tag-btn ${selectedTag === tag ? 'active' : ''}`}
+                  onClick={() => handleTagClick(tag)}
+                >
+                  {tag}
+                  {!isDefault && (
+                    <span 
+                      className="remove-tag-x" 
+                      onClick={(e) => handleRemoveEventTag(e, tag)}
+                      title="Видалити фільтр"
+                    >
+                      ×
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+            {showAddInput ? (
+              <form 
+                onSubmit={handleAddEventTagInline} 
+                className="inline-add-form animate-fade-in"
+                onBlur={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget)) {
+                    setShowAddInput(false);
+                    setNewTagName('');
+                  }
+                }}
+              >
+                <input
+                  type="text"
+                  className="inline-add-input"
+                  placeholder="Новий фільтр..."
+                  value={newTagName}
+                  onChange={(e) => setNewTagName(e.target.value)}
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setShowAddInput(false);
+                      setNewTagName('');
+                    }
+                  }}
+                />
+                <button type="submit" className="inline-add-submit" title="Зберегти">✓</button>
+                <button type="button" className="inline-add-cancel" onClick={() => { setShowAddInput(false); setNewTagName(''); }} title="Скасувати">×</button>
+              </form>
+            ) : (
+              <button 
+                className="add-tag-btn" 
+                onClick={() => setShowAddInput(true)} 
+                title="Додати власний фільтр"
+              >
+                +
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -85,23 +220,38 @@ export default function Events() {
 
       {!loading && !error && (
         <>
-          {events.length === 0 ? (
+          {filteredEvents.length === 0 ? (
             <div className="events-empty">
-              <p>Нічого не знайдено {searchQuery && `за запитом "${searchQuery}"`}</p>
+              <p>Нічого не знайдено {searchQuery && `за запитом "${searchQuery}"`} {selectedTag !== 'Усі' && `у розділі "${selectedTag}"`}</p>
             </div>
           ) : (
             <div className="events-grid">
-              {events.map((event) => (
+              {filteredEvents.map((event) => (
                 <div key={event.id} className="event-card-wrapper">
                   <Card
                     title={event.title}
                     description={event.description}
                     imageUrl={event.image_url}
-                    extraInfo={`📅 ${formatDate(event.date)}`}
+                    extraInfo={(
+                      <div className="event-meta-details">
+                        <div className="event-meta-item event-date">
+                          <span className="event-meta-icon" title="Дата проведення">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                          </span>
+                          <span>{formatDate(event.date)}</span>
+                        </div>
+                        <div className="event-meta-item event-location">
+                          <span className="event-meta-icon" title="Місце проведення">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                          </span>
+                          <span>Де: {event.location || 'Онлайн / Уточнюється'}</span>
+                        </div>
+                      </div>
+                    )}
                     actions={isAdmin ? (
                       <>
                         <Link to={`/events/edit/${event.id}`} className="btn-edit">
-                          ✏️ Редагувати
+                          Редагувати
                         </Link>
                         {deleteConfirm === event.id ? (
                           <>
@@ -123,7 +273,7 @@ export default function Events() {
                             className="btn-delete"
                             onClick={() => setDeleteConfirm(event.id)}
                           >
-                            🗑️ Видалити
+                            Видалити
                           </button>
                         )}
                       </>
@@ -167,7 +317,7 @@ export default function Events() {
           )}
 
           <div className="pagination-info">
-            Показано {events.length} з {pagination.total} подій
+            Показано {filteredEvents.length} з {pagination.total} подій
           </div>
         </>
       )}

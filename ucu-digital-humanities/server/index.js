@@ -133,14 +133,14 @@ app.post('/api/events', (req, res) => {
     return res.status(403).json({ error: 'Admin access required' });
   }
 
-  const { title, description, date, image_url } = req.body;
+  const { title, description, date, image_url, location } = req.body;
   if (!title || !description || !date) {
     return res.status(400).json({ error: 'Title, description, and date are required' });
   }
 
   const result = db.prepare(
-    'INSERT INTO events (title, description, date, image_url) VALUES (?, ?, ?, ?)'
-  ).run(title, description, date, image_url || null);
+    'INSERT INTO events (title, description, date, image_url, location) VALUES (?, ?, ?, ?, ?)'
+  ).run(title, description, date, image_url || null, location || null);
 
   const event = db.prepare('SELECT * FROM events WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json({ event });
@@ -158,14 +158,15 @@ app.put('/api/events/:id', (req, res) => {
     return res.status(404).json({ error: 'Event not found' });
   }
 
-  const { title, description, date, image_url } = req.body;
+  const { title, description, date, image_url, location } = req.body;
   db.prepare(
-    'UPDATE events SET title = ?, description = ?, date = ?, image_url = ? WHERE id = ?'
+    'UPDATE events SET title = ?, description = ?, date = ?, image_url = ?, location = ? WHERE id = ?'
   ).run(
     title || existing.title,
     description || existing.description,
     date || existing.date,
     image_url !== undefined ? image_url : existing.image_url,
+    location !== undefined ? location : existing.location,
     req.params.id
   );
 

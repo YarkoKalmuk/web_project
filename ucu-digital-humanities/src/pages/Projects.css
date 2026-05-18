@@ -1,76 +1,1339 @@
+/* 🎛️ Загальні стилі сторінки та заголовку */
 .projects-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .projects-header h1 {
-  color: var(--primary);
-  margin-bottom: 1rem;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
 }
 
-.projects-header p {
+.projects-description {
   color: var(--text-color);
   opacity: 0.8;
   font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 700px;
+  margin: 0 auto 1.5rem auto;
+  line-height: 1.6;
+}
+
+/* 🎛️ Перемикач вкладок (Tabs) */
+.tabs-container {
+  display: inline-flex;
+  background-color: var(--border-color);
+  padding: 4px;
+  border-radius: 30px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+
+.tab-btn {
+  background: transparent;
+  color: var(--text-color);
+  opacity: 0.7;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: none;
+}
+
+.tab-btn:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: none;
+  box-shadow: none;
+}
+
+.tab-btn.active {
+  background-color: var(--card-bg);
+  color: var(--primary);
+  opacity: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .tab-btn.active {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* 🗺️ Компоновка ГІС секції (2-панельний Grid) */
+.gis-map-section {
+  width: 100%;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.gis-map-container {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* 🗺️ Мапа та її рамка */
+.map-canvas-wrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-coordinate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.6;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.coordinate-grid-indicator {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+body.dark .coordinate-grid-indicator {
+  background-color: rgba(96, 165, 250, 0.15);
+}
+
+.gis-map-canvas {
+  background-color: rgba(241, 245, 249, 0.5);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.4s ease;
+}
+
+body.dark .gis-map-canvas {
+  background-color: rgba(15, 23, 42, 0.3);
+}
+
+/* 🗺️ Контур України та сітка */
+.ukraine-outline {
+  fill: rgba(59, 130, 246, 0.03);
+  stroke: var(--border-color);
+  stroke-width: 1.5;
+  transition: all 0.5s ease;
+}
+
+body.dark .ukraine-outline {
+  fill: rgba(96, 165, 250, 0.015);
+  stroke: #1e293b;
+}
+
+/* 🟢 Анімовані потоки даних (Network Links) */
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.map-link-line {
+  stroke: var(--primary);
+  stroke-width: 1.5;
+  stroke-dasharray: 6, 4;
+  animation: flow-dash 1.2s linear infinite;
+  opacity: 0.35;
+  transition: opacity 0.5s ease;
+}
+
+/* 📍 Стилі вузлів мапи (City nodes) */
+.map-node {
+  transition: transform 0.3s ease;
+}
+
+.map-node .main-node-circle {
+  fill: var(--primary);
+  stroke: #ffffff;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px var(--primary);
+}
+
+body.dark .map-node .main-node-circle {
+  stroke: var(--card-bg);
+}
+
+.map-node.selected .main-node-circle {
+  fill: #10b981; /* Green when selected */
+  transform: scale(1.3);
+}
+
+/* 🟢 Пульсуюче коло маркерів */
+@keyframes map-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+.pulse-circle {
+  fill: var(--primary);
+  opacity: 0.3;
+  transform-origin: center;
+  animation: map-pulse 2s infinite ease-out;
+}
+
+.map-node.selected .pulse-circle {
+  fill: #10b981;
+}
+
+.map-node .node-text {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-color);
+  filter: drop-shadow(0px 1px 2px var(--card-bg));
+  transition: all 0.3s ease;
+}
+
+.map-node:hover .main-node-circle {
+  transform: scale(1.2);
+}
+
+/* Вузли, які закриті для цього року */
+.map-node.archived {
+  opacity: 0.45;
+}
+.map-node.archived .main-node-circle {
+  fill: #64748b;
+}
+.map-node.archived .pulse-circle {
+  display: none;
+}
+
+/* 🎚️ ПОВЗУНОК ЧАСУ (Timeline Panel) */
+.timeline-control-panel {
+  margin-top: 1.5rem;
+  background-color: rgba(241, 245, 249, 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+body.dark .timeline-control-panel {
+  background-color: rgba(30, 41, 59, 0.4);
+}
+
+.timeline-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.play-btn {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.play-btn.playing {
+  background-color: #ef4444;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+.current-year-display {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.year-number {
+  background-color: var(--primary);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: inline-block;
+  min-width: 60px;
+  text-align: center;
+}
+
+.timeline-slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.slider-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.timeline-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border-color);
+  outline: none;
+  transition: background 0.3s;
+}
+
+.timeline-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+body.dark .timeline-slider::-webkit-slider-thumb {
+  border-color: var(--card-bg);
+}
+
+.timeline-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.timeline-milestones {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.5;
+  padding: 0 10px;
+}
+
+.milestone {
+  transition: all 0.3s ease;
+}
+
+.milestone.passed {
+  color: var(--primary);
+  opacity: 1;
+}
+
+/* 📜 ЖИВИЙ ХРОНОЛОГІЧНИЙ ФІД ПОДІЙ (Temporal Events Chronicle) */
+.temporal-feed-container {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.feed-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.feed-icon {
+  font-size: 1.1rem;
+}
+
+.temporal-feed-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Красива прокрутка для сітки карток */
+.temporal-feed-cards-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.temporal-feed-cards-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.temporal-feed-cards-grid::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.timeline-event-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.timeline-event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary);
+}
+
+body.dark .timeline-event-card:hover {
+  box-shadow: 0 8px 16px rgba(96, 165, 250, 0.15);
+}
+
+.event-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.event-card-top h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.timeline-event-card p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.event-year-badge {
+  background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
+  white-space: nowrap;
+}
+
+.empty-event {
+  color: var(--text-color);
+  opacity: 0.6;
+  text-align: center;
+  justify-content: center;
+  padding: 1rem 0;
+  grid-column: 1 / -1;
+}
+
+/* 📋 БІЧНА ПАНЕЛЬ ДЕТАЛЕЙ (Glassmorphism Sidebar) */
+.gis-sidebar-details {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.glassmorphism {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+body.dark .glassmorphism {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+.sidebar-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.status-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.active-badge {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.sidebar-header h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.6;
+  margin-bottom: 0;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.info-label {
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.info-value {
+  font-weight: 700;
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.info-section {
+  margin-top: 1.5rem;
+}
+
+.info-section h3 {
+  font-size: 1.05rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  border-left: 3px solid var(--primary);
+  padding-left: 8px;
+}
+
+.works-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.work-item {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.work-item:last-child {
+  border-bottom: none;
+}
+
+.work-title {
+  font-weight: 600;
+}
+
+.work-meta {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.dh-status-box {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px dashed rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+body.dark .dh-status-box {
+  background-color: rgba(96, 165, 250, 0.03);
+  border-color: rgba(96, 165, 250, 0.15);
+}
+
+.dh-status-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.sidebar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.5;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* 🧪 СТИЛІ ДЛЯ ТЕКСТОВОЇ ОБЛАСТІ NLP ТА АНАЛІЗАТОРА */
+.nlp-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.nlp-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+body.dark .nlp-textarea:focus {
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.nlp-textarea-hint {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  margin-top: 4px;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+/* 🧪 СТИЛІ ДЛЯ NLP АНАЛІЗАТОРА (NLP SECTION) */
+.nlp-analysis-section {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.5rem;
+}
+
+.nlp-run-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.nlp-run-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, #1e40af 100%);
+}
+
+.nlp-run-btn:disabled {
+  background: #64748b;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Спінер завантаження */
+.nlp-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(59, 130, 246, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 0.75rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.nlp-results {
+  margin-top: 1.5rem;
+  background-color: rgba(248, 250, 252, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+body.dark .nlp-results {
+  background-color: rgba(15, 23, 42, 0.2);
+}
+
+.nlp-results h4 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.nlp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+
+.nlp-stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.nlp-stat-card .stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.5;
+  display: block;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.nlp-stat-card .stat-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* 🏷️ Теги виділення сутностей (NER Highlights) */
+.nlp-ner-box {
+  margin-bottom: 1.25rem;
+}
+
+.nlp-ner-box h5, .nlp-chart-box h5 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ner-text-rendered {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-family: inherit;
+}
+
+.ner-entity {
+  position: relative;
+  display: inline-block;
+  padding: 1px 6px;
+  margin: 0 2px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.ner-person {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-bottom: 2px solid #ef4444;
+}
+
+.ner-location {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-bottom: 2px solid #10b981;
+}
+
+.ner-date {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-bottom: 2px solid #f59e0b;
+}
+
+/* Тултіп для NER */
+.ner-tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0f172a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ner-entity:hover .ner-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 📊 Анімований міні-графік літер */
+.chart-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.bar-char {
+  font-weight: 700;
+  min-width: 32px;
+}
+
+.bar-track {
+  flex: 1;
+  height: 8px;
+  background-color: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, #10b981 100%);
+  border-radius: 4px;
+  animation: slideIn 0.8s ease-out forwards;
+  transform-origin: left;
+}
+
+@keyframes slideIn {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.bar-val {
+  min-width: 40px;
+  text-align: right;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Анімація появи результатів */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* 📚 ВКЛАДКА 2: БАЗА ДОСЛІДНИЦЬКИХ ПРОЄКТІВ */
+.projects-database-section {
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
-}
-
-.search-container {
-  max-width: 500px;
-  margin: 0 auto 3rem auto;
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  border-radius: 30px;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-bg);
-  color: var(--text-color);
-  font-size: 1.1rem;
-  font-family: inherit;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-}
-
-body.dark .search-input:focus {
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .project-card-wrapper {
   display: flex;
 }
 
-.loading, .error {
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
-  color: var(--text-color);
-  background: var(--card-bg);
-  border-radius: var(--radius);
+/* 🔍 ПРЕМІУМ-ПОШУКОВИЙ ЦЕНТР */
+.premium-search-wrapper {
   border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.25rem 2rem;
+  margin-bottom: 2.25rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.error {
+.search-bar-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  font-size: 1.2rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.premium-search-input {
+  width: 100%;
+  padding: 0.85rem 3rem 0.85rem 3.25rem;
+  border-radius: 35px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1.05rem;
+  font-family: inherit;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+}
+
+.premium-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+body.dark .premium-search-input:focus {
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25), inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 1.25rem;
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--text-color);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.clear-search-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
-  border-color: #fca5a5;
-  background-color: #fef2f2;
+  transform: scale(1.1);
+  box-shadow: none;
 }
 
-body.dark .error {
-  background-color: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
+.quick-tags-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 700px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.85rem;
 }
+
+.tags-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.6;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.quick-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.quick-tag-btn {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  opacity: 0.8;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.quick-tag-btn:hover {
+  background-color: var(--border-color);
+  opacity: 1;
+  transform: none;
+  box-shadow: none;
+}
+
+.quick-tag-btn.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  opacity: 1;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+/* ── 📱 Адаптивність під мобільні пристрої ── */
+@media (max-width: 992px) {
+  .gis-map-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .quick-tags-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .tabs-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    width: 100%;
+  }
+
+  .tab-btn {
+    border-radius: 8px;
+    width: 100%;
+  }
+  
+  .gis-sidebar-details {
+    padding: 1.25rem;
+  }
+  
+  .nlp-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .temporal-feed-container {
+    padding: 1rem;
+  }
+  
+  .active-event-card {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .premium-search-wrapper {
+    padding: 1.25rem;
+  }
+  
+  .premium-search-input {
+    font-size: 0.95rem;
+    padding-left: 2.75rem;
+  }
+  
+  .search-icon {
+    left: 1rem;
+  }
+}
+
+/* 🏷️ Кастомні швидкі фільтри */
+.quick-tag-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.add-tag-btn {
+  background-color: transparent;
+  border: 1px dashed var(--border-color);
+  color: var(--text-color);
+  opacity: 0.6;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  box-shadow: none;
+}
+
+.add-tag-btn:hover {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.remove-tag-x {
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.remove-tag-x:hover {
+  background-color: #ef4444;
+  color: white;
+  transform: scale(1.2);
+}
+
+/* 📝 Інлайнова форма додавання фільтра */
+.inline-add-form {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2px 4px 2px 10px;
+  height: 32px;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.inline-add-input {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  width: 110px;
+  padding: 0;
+}
+
+.inline-add-input::placeholder {
+  opacity: 0.5;
+}
+
+.inline-add-submit, .inline-add-cancel {
+  background: transparent;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  box-shadow: none;
+}
+
+.inline-add-submit {
+  color: #10b981;
+}
+
+.inline-add-submit:hover {
+  background-color: rgba(16, 185, 129, 0.15);
+  transform: scale(1.1);
+}
+
+.inline-add-cancel {
+  color: #ef4444;
+}
+
+.inline-add-cancel:hover {
+  background-color: rgba(239, 68, 68, 0.15);
+  transform: scale(1.1);
+}
+
+/* 📂 Premium Project Card Metadata Styling */
+.project-meta-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.75rem;
+}
+
+.project-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.project-direction {
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+.project-goal {
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.75;
+}
+
+.project-meta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* 📝 Premium Project Form Modal */
+.project-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6); /* Dark slate semi-transparent */
+  backdrop-filter: blur(8px);
+  z-index: 1100; /* Higher than navbar and other elements */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: projectModalFadeIn 0.3s ease-out forwards;
+}
+
+.project-modal {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 600px;
+  width: 100%;
+  padding: 2.5rem;
+  position: relative;
+  overflow-y: auto;
+  max-height: 90vh;
+  animation: projectModalSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes projectModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes projectModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.project-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: transparent;
+  color: var(--text-color);
+  opacity: 0.5;
+  font-size: 2rem;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.project-modal-close:hover {
+  background: transparent;
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: none;
+}
+
+/* 🛡️ Admin Action Bar for Projects */
+.admin-action-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.btn-create {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  color: #fff !important;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  cursor: pointer;
+}
+
+.btn-create:hover {
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+
+

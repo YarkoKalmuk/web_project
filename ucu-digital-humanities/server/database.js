@@ -22,6 +22,14 @@ if (columns.length > 0) {
   }
 }
 
+const columnsEvents = db.pragma('table_info(events)');
+if (columnsEvents.length > 0) {
+  const hasLocation = columnsEvents.some(c => c.name === 'location');
+  if (!hasLocation) {
+    db.exec("ALTER TABLE events ADD COLUMN location TEXT");
+  }
+}
+
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id    INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,6 +46,7 @@ db.exec(`
     description TEXT NOT NULL,
     date        TEXT NOT NULL,
     image_url   TEXT,
+    location    TEXT,
     created_at  TEXT DEFAULT (datetime('now'))
   );
 
@@ -62,7 +71,7 @@ if (userCount.count === 0) {
 const eventCount = db.prepare('SELECT COUNT(*) as count FROM events').get();
 if (eventCount.count === 0) {
   const insertEvent = db.prepare(
-    'INSERT INTO events (title, description, date, image_url) VALUES (?, ?, ?, ?)'
+    'INSERT INTO events (title, description, date, image_url, location) VALUES (?, ?, ?, ?, ?)'
   );
 
   const seedEvents = [
@@ -70,42 +79,48 @@ if (eventCount.count === 0) {
       title: 'Міжнародна конференція з цифрової історії',
       description: 'Обговорення нових методів оцифрування та аналізу історичних даних з провідними європейськими експертами. Захід включає пленарні доповіді, майстер-класи та панельні дискусії.',
       date: '2026-09-15',
-      image_url: 'https://picsum.photos/seed/event1/400/200'
+      image_url: 'https://picsum.photos/seed/event1/400/200',
+      location: 'Центр Шептицького, Конференц-зал'
     },
     {
       title: 'Воркшоп: Вступ до Python для гуманітаріїв',
       description: 'Практичне заняття з основ програмування для студентів гуманітарних спеціальностей. Учасники навчаться працювати з текстовими даними та створювати прості аналітичні скрипти.',
       date: '2026-10-22',
-      image_url: 'https://picsum.photos/seed/event2/400/200'
+      image_url: 'https://picsum.photos/seed/event2/400/200',
+      location: 'УКУ, Комп\'ютерний клас 302'
     },
     {
       title: 'Презентація цифрового архіву самвидаву',
       description: 'Відкриття нового онлайн-архіву українського самвидаву 1960-1980-х років. Демонстрація можливостей пошуку та аналізу оцифрованих документів.',
       date: '2026-11-05',
-      image_url: 'https://picsum.photos/seed/event3/400/200'
+      image_url: 'https://picsum.photos/seed/event3/400/200',
+      location: 'УКУ, Коворкінг ім. митрополита Андрея Шептицького'
     },
     {
       title: 'Семінар з ГІС-технологій в історії',
       description: 'Навчальний семінар з використання геоінформаційних систем для дослідження та візуалізації історичних процесів на території України.',
       date: '2026-11-20',
-      image_url: 'https://picsum.photos/seed/event4/400/200'
+      image_url: 'https://picsum.photos/seed/event4/400/200',
+      location: 'Онлайн-семінар (Zoom)'
     },
     {
       title: 'Хакатон: Digital Humanities Challenge',
       description: 'Двохденний хакатон для студентів та молодих дослідників. Команди працюватимуть над створенням інноваційних цифрових інструментів для гуманітарних досліджень.',
       date: '2026-12-01',
-      image_url: 'https://picsum.photos/seed/event5/400/200'
+      image_url: 'https://picsum.photos/seed/event5/400/200',
+      location: 'Центр Шептицького, Паркова аудиторія'
     },
     {
       title: 'Лекція: Штучний інтелект у музеях',
       description: 'Публічна лекція про застосування технологій ШІ для каталогізації, реставрації та інтерактивних виставок у сучасних музеях світу.',
       date: '2026-12-15',
-      image_url: 'https://picsum.photos/seed/event6/400/200'
+      image_url: 'https://picsum.photos/seed/event6/400/200',
+      location: 'УКУ, Лекторій 101'
     }
   ];
 
   for (const event of seedEvents) {
-    insertEvent.run(event.title, event.description, event.date, event.image_url);
+    insertEvent.run(event.title, event.description, event.date, event.image_url, event.location);
   }
   console.log('✅ Seeded 6 default events');
 }

@@ -1,0 +1,79 @@
+========================================================================
+DIGITAL HUMANITIES PLATFORM - PROJECT CONTEXT FOR CHATGPT / LLM PROMPTS
+========================================================================
+
+Dear AI Assistant,
+
+You are analyzing the codebase of a web technology course project:
+"Цифрова мапа першодрукарень України (XVI-XVIII ст.)" (Digital Map of early Ukrainian printing houses).
+This is a full-stack Web Application built for the Ukrainian Catholic University (UCU).
+
+------------------------------------------------------------------------
+1. TECHNOLOGY STACK & SYSTEM ARCHITECTURE
+------------------------------------------------------------------------
+* Core: React (Vite-based build pipeline) + Vanilla CSS (No Tailwind CSS).
+* Styling System: Custom design tokens in `index.css` (variables for light/dark modes, custom transitions, neon glow highlights).
+* State Management: Standard React hooks (useState, useEffect, useRef) and Context providers for Events and Auth.
+* Backend: Express.js backend running in `/server` directory, connecting to a structured SQLite database.
+* Dev Server: Frontend running at http://localhost:5173.
+
+------------------------------------------------------------------------
+2. SYSTEM PAGES & COMPONENTS DIRECTORY
+------------------------------------------------------------------------
+All pages are located in `src/pages/` and styled with matching CSS files:
+* Home.jsx: Landing page welcoming users.
+* Projects.jsx: Main hub. Consists of two tabs:
+  - Tab 1: Interactive GIS-Map showing Ukraine outline with dynamic timelines and printing hubs.
+  - Tab 2: Database explorer of academic studies with filtering tags.
+* Events.jsx: Grid of upcoming events using reusable Card component + lightbox zoom photo gallery at the bottom.
+* Team.jsx: Academic roles and team members list.
+* About.jsx: Core methodology and context (fully translated to Ukrainian).
+* Login.jsx: Secure academic authentication.
+* components/Card/: Reusable card UI wrapper with elegant hover transformations.
+
+------------------------------------------------------------------------
+3. CURRENT KEY IMPLEMENTATIONS IN THE PROJECTS PAGE (Projects.jsx)
+------------------------------------------------------------------------
+The Projects page represents the most advanced Digital Humanities module in the application, including:
+
+A. HIGH-PRECISION SVG UKRAINE MAP:
+   - Contains geographically accurate paths representing Ukraine (including Crimean peninsula, Azov Sea, Carpathian curve, Odessa bay, Bessarabia region).
+   - Animates "data-flow" network dashed lines showing circulation of masters, paper, and materials between hubs.
+   - Nodes (Lviv, Ostroh, Kyiv, Chernihiv, Pochaiv) are active/pulse or archived depending on the timeline slider year.
+
+B. TEMPORAL TIMELINE SLIDER:
+   - Timeline range: 1570 to 1800. Includes an "Auto-play" button with a custom interval timer.
+   - Syncs with a card-based historical events grid showing exactly what key publications and historical events occurred.
+
+C. REAL-TIME COMPUTATIONAL NLP TEXT ENGINE:
+   - Includes an interactive <textarea> inside the detail sidebar. Populated with authentic Old Cyrillic text, but users can paste ANY text they want.
+   - Live computations run in pure JavaScript upon clicking the analysis button:
+     * Counts exact characters and words (stripping punctuation).
+     * Calculates lexicographical variety (TTR - Type-Token Ratio) using Set-based word deduplication.
+     * Computes Cyrillic letter percentages and dynamically sorts/renders a top 5 horizontal frequency chart.
+     * Named Entity Recognition (NER): Rule-based tags highlighting Persons (red), Locations (green), and Dates (yellow, auto-detects years) with float tooltips.
+
+D. PREMIUM DATABASE SEARCH HUB:
+   - Clean rounded input bar with search magnifying glass icon and clear (×) button.
+   - Quick filter category tags ("All", "NLP", "GIS") to filter academic posts by research area in one click.
+
+------------------------------------------------------------------------
+4. COMPONENT CSS VARIABLES AVAILABLE IN THE DESIGN SYSTEM
+------------------------------------------------------------------------
+The design system in `index.css` offers:
+* `--primary`: Royal Blue (#3b82f6)
+* `--primary-hover`: Darker Blue (#1d4ed8)
+* `--card-bg`: Card background (supports glassmorphic blur and light/dark theme shifts)
+* `--border-color`: Fine border colors
+* `--text-color`: Main text color
+* `--radius`: Standard border-radius (16px)
+* `--shadow`: Sleek box-shadows
+
+------------------------------------------------------------------------
+5. SUGGESTIONS FOR NEW Standalone DIGITAL HUMANITIES FEATURES
+------------------------------------------------------------------------
+Here are four potential advanced standalone pages/tools to add next:
+1. "Стилометрія" (Comparative Stylometry Lab): A side-by-side textual analysis tool comparing vocabulary profiles and letter frequencies of two pasted documents.
+2. "Лабораторія транскрипції" (Interactive Paleography Transcription Game): Gamified transcription playground where users type modern Ukrainian transcriptions of 16th-century prints with built-in hints for obsolete Cyrillic letters (ѣ, ѡ, ѱ, титла).
+3. "Мережа зв'язків" (Social Network Graph Explorer): Standalone page displaying a force-directed network graph (patronage, student exchanges) of early modern Ukrainian writers, publishers, and academies.
+4. "Дашборд оцифрування" (Archival Digitization Progress Dashboard): A dashboard showing archiving metrics across different libraries and centuries with radial progress metrics.
