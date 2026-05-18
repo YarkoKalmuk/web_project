@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Light Theme Colors */
+  
   --bg-color: #f8fafc;
   --text-color: #0f172a;
   --card-bg: #ffffff;
@@ -16,7 +16,7 @@
 }
 
 body.dark {
-  /* Dark Theme Colors */
+  
   --bg-color: #0f172a;
   --text-color: #f8fafc;
   --card-bg: #1e293b;
@@ -53,7 +53,7 @@ body {
   overflow-x: clip;
 }
 
-/* Page entrance animation */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -115,7 +115,7 @@ button:active {
   transform: translateY(0);
 }
 
-/* Utility classes for new layout elements */
+
 .section-title {
   text-align: center;
   font-size: 2.5rem;
@@ -137,7 +137,7 @@ button:active {
   border-radius: 2px;
 }
 
-/* ── Mobile responsive global ── */
+
 @media (max-width: 768px) {
   .content-container {
     padding: 2rem 1rem;

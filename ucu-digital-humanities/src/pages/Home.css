@@ -69,7 +69,7 @@
   color: #fff;
 }
 
-/* Statistics */
+
 .stats-section {
   display: flex;
   justify-content: space-around;
@@ -92,7 +92,7 @@
   opacity: 0.8;
 }
 
-/* Directions grid */
+
 .directions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -101,7 +101,7 @@
   margin-bottom: 4rem;
 }
 
-/* CTA Section */
+
 .cta-section {
   padding: 4rem 2rem;
   background: var(--card-bg);
@@ -120,7 +120,7 @@
   opacity: 0.8;
 }
 
-/* ── Mobile ── */
+
 @media (max-width: 768px) {
   .hero-content {
     padding: 2rem 1.25rem;

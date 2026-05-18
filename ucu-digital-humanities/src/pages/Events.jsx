@@ -151,7 +151,7 @@ export default function Events() {
           )}
         </div>
 
-        {/* Категорійні швидкі теги для дат/місяців */}
+        
         <div className="quick-tags-container">
           <span className="tags-label">Швидкий фільтр:</span>
           <div className="quick-tags-list">

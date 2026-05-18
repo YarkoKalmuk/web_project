@@ -68,7 +68,7 @@
   color: var(--primary);
 }
 
-/* ── Auth controls ── */
+
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -144,7 +144,7 @@
   color: var(--primary);
 }
 
-/* ── Profile Button ── */
+
 .profile-nav-btn {
   background: transparent;
   border: 2px solid var(--border-color);
@@ -172,7 +172,7 @@
   object-fit: cover;
 }
 
-/* ── Hamburger ── */
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -205,7 +205,7 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* ── Mobile responsive ── */
+
 @media (max-width: 768px) {
   .hamburger {
     display: flex;

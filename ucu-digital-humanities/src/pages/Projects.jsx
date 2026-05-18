@@ -4,14 +4,14 @@ import Card from '../components/Card/Card';
 import { useAuth } from '../context/AuthContext';
 import './Projects.css';
 
-// Унікальні історичні DH-дані про перші українські друкарні
+
 const printingHubs = [
   {
     id: 'lviv',
     name: 'Львівська друкарня',
     founder: 'Іван Федорович / Ставропігійське братство',
     founded: 1573,
-    closed: 1800, // діє після 1800
+    closed: 1800,
     x: 140,
     y: 200,
     description: 'Найстаріший безперервний осередок книгодрукування в Україні. Поклав початок масовому виданню книг кириличним шрифтом на українських теренах.',
@@ -114,7 +114,7 @@ const printingHubs = [
   }
 ];
 
-// Історичні хроніки для відображення в реальному часі на шкалі років
+
 const historicalTimelineEvents = [
   {
     year: 1573,
@@ -178,7 +178,7 @@ const historicalTimelineEvents = [
   }
 ];
 
-// Реальні DH-теми для заміни Lorem Ipsum з API
+
 const dhResearchTopics = [
   {
     title: "Комп'ютерний аналіз синтаксису козацьких літописів XVII ст.",
@@ -232,24 +232,24 @@ const dhResearchTopics = [
 
 export default function Projects() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('map'); // 'map' або 'database'
-  
-  // States для мапи та таймлайну
+  const [activeTab, setActiveTab] = useState('map');
+
+
   const [currentYear, setCurrentYear] = useState(1570);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedHubId, setSelectedHubId] = useState('lviv');
   const [analyzing, setAnalyzing] = useState(false);
   const [showNlpResult, setShowNlpResult] = useState(false);
-  
-  // 🔬 Нові states для живого NLP-аналізатора
+
+
   const [inputText, setInputText] = useState('');
   const [nlpResults, setNlpResults] = useState(null);
-  
-  // States для списку проєктів
+
+
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState('Усі'); // Швидка фільтрація
+  const [selectedTag, setSelectedTag] = useState('Усі');
   const [projectTags, setProjectTags] = useState(() => {
     const saved = localStorage.getItem('project_custom_tags');
     return saved ? JSON.parse(saved) : ['Усі', 'NLP та аналіз текстів', 'ГІС та цифрові архіви'];
@@ -259,7 +259,7 @@ export default function Projects() {
   const [showAddInput, setShowAddInput] = useState(false);
   const [newTagName, setNewTagName] = useState('');
 
-  // 🛡️ Адмін-управління проєктами
+
   const { isAdmin } = useAuth();
   const [deleteConfirmProject, setDeleteConfirmProject] = useState(null);
 
@@ -298,11 +298,11 @@ export default function Projects() {
       applyFilters(searchQuery, 'Усі');
     }
   };
-  
+
   const timerRef = useRef(null);
   const currentHub = printingHubs.find(h => h.id === selectedHubId);
 
-  // Оновлення тексту в редакторі при перемиканні друкарень
+
   useEffect(() => {
     if (currentHub) {
       setInputText(currentHub.sampleText);
@@ -311,7 +311,7 @@ export default function Projects() {
     }
   }, [selectedHubId]);
 
-  // Auto-play ефект для часової шкали
+
   useEffect(() => {
     if (isPlaying) {
       timerRef.current = setInterval(() => {
@@ -332,15 +332,15 @@ export default function Projects() {
     };
   }, [isPlaying]);
 
-  // 📥 Завантаження проєктів з API / localStorage та мапінг на DH
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const saved = localStorage.getItem('dh_projects');
         if (saved) {
           const parsed = JSON.parse(saved);
-          
-          // Migrate / ensure they have direction and goal properties
+
+
           const migrated = parsed.map((p, index) => {
             let direction = p.direction;
             if (!direction && p.extraInfo) {
@@ -375,7 +375,7 @@ export default function Projects() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        
+
         const formattedData = data.map((item, index) => {
           const dhTopic = dhResearchTopics[index % dhResearchTopics.length];
           return {
@@ -387,7 +387,7 @@ export default function Projects() {
             goal: dhTopic.goal
           };
         });
-        
+
         setProjects(formattedData);
         setFilteredProjects(formattedData);
         localStorage.setItem('dh_projects', JSON.stringify(formattedData));
@@ -401,22 +401,22 @@ export default function Projects() {
     fetchProjects();
   }, []);
 
-  // 🔍 Декларативна реактивна фільтрація за пошуковим запитом та категорійним тегом
+
   useEffect(() => {
     let result = [...projects];
 
     if (selectedTag !== 'Усі') {
       const isDefault = selectedTag === 'NLP та аналіз текстів' || selectedTag === 'ГІС та цифрові архіви';
       if (isDefault) {
-        result = result.filter(project => 
-          (project.direction && project.direction.includes(selectedTag)) || 
+        result = result.filter(project =>
+          (project.direction && project.direction.includes(selectedTag)) ||
           (project.extraInfo && project.extraInfo.includes(selectedTag))
         );
       } else {
         const lowerTag = selectedTag.toLowerCase();
-        result = result.filter(project => 
-          project.title.toLowerCase().includes(lowerTag) || 
-          project.description.toLowerCase().includes(lowerTag) || 
+        result = result.filter(project =>
+          project.title.toLowerCase().includes(lowerTag) ||
+          project.description.toLowerCase().includes(lowerTag) ||
           (project.direction && project.direction.toLowerCase().includes(lowerTag)) ||
           (project.goal && project.goal.toLowerCase().includes(lowerTag)) ||
           (project.extraInfo && project.extraInfo.toLowerCase().includes(lowerTag))
@@ -426,8 +426,8 @@ export default function Projects() {
 
     if (searchQuery !== '') {
       const q = searchQuery.toLowerCase();
-      result = result.filter(project => 
-        project.title.toLowerCase().includes(q) || 
+      result = result.filter(project =>
+        project.title.toLowerCase().includes(q) ||
         project.description.toLowerCase().includes(q) ||
         (project.direction && project.direction.toLowerCase().includes(q)) ||
         (project.goal && project.goal.toLowerCase().includes(q))
@@ -455,40 +455,40 @@ export default function Projects() {
     setShowNlpResult(false);
   };
 
-  // 🧪 ЖИВИЙ ОБЧИСЛЮВАЛЬНИЙ NLP АНАЛІЗАТОР ТЕКСТУ
+
   const runNlpAnalysis = () => {
     setAnalyzing(true);
     setShowNlpResult(false);
-    
-    // Імітація обробки для збереження візуального ефекту (800ms)
+
+
     setTimeout(() => {
       const textToAnalyze = inputText.trim();
       const charsCount = textToAnalyze.length;
-      
-      // Токенізація: очищення від розділових знаків і розбиття на слова
+
+
       const cleanedWords = textToAnalyze
         .toLowerCase()
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"«»’'–]/g, "")
         .split(/\s+/)
         .filter(w => w.trim() !== '');
-      
+
       const totalWords = cleanedWords.length;
       const uniqueWordsSet = new Set(cleanedWords);
       const uniqueWordsCount = uniqueWordsSet.size;
-      
-      // Розрахунок коефіцієнта лексичного різноманіття (TTR)
-      const computedTtr = totalWords > 0 
-        ? parseFloat((uniqueWordsCount / totalWords).toFixed(2)) 
+
+
+      const computedTtr = totalWords > 0
+        ? parseFloat((uniqueWordsCount / totalWords).toFixed(2))
         : 0;
 
-      // Підрахунок частотності кириличних літер
+
       const cyrillicLetters = textToAnalyze.toLowerCase().replace(/[^а-яєіїґ]/g, "");
       const letterCounts = {};
       for (let char of cyrillicLetters) {
         letterCounts[char] = (letterCounts[char] || 0) + 1;
       }
       const totalLettersCount = cyrillicLetters.length;
-      
+
       const computedCharFreq = Object.entries(letterCounts)
         .map(([char, count]) => ({
           char,
@@ -497,10 +497,10 @@ export default function Projects() {
         .sort((a, b) => b.val - a.val)
         .slice(0, 5);
 
-      // Виділення іменованих сутностей (NER): динамічне співставлення
+
       const detectedEntities = [];
-      
-      // Додаємо сутності зі словника друкарні, якщо вони присутні в тексті
+
+
       if (currentHub && currentHub.nerEntities) {
         currentHub.nerEntities.forEach(ent => {
           if (textToAnalyze.includes(ent.text)) {
@@ -509,7 +509,7 @@ export default function Projects() {
         });
       }
 
-      // Автоматичне виявлення років як сутностей Дат (4-значні числа від 1500 до 1800)
+
       const yearRegex = /\b(1[5678]\d{2})\b/g;
       let match;
       while ((match = yearRegex.exec(textToAnalyze)) !== null) {
@@ -523,10 +523,10 @@ export default function Projects() {
         }
       }
 
-      // Формування підсвіченого JSX тексту
+
       const highlightedTextElements = renderHighlightedText(textToAnalyze, detectedEntities);
 
-      // Запис результатів
+
       setNlpResults({
         chars: charsCount,
         words: totalWords,
@@ -540,17 +540,17 @@ export default function Projects() {
     }, 800);
   };
 
-  // Хроніка історичних подій для вибраного року
+
   const activeTimelineEvents = historicalTimelineEvents.filter(e => e.year <= currentYear);
 
-  // Функція для рендеру підсвіченого тексту (NER)
+
   const renderHighlightedText = (text, entities) => {
     if (!entities || entities.length === 0) return text;
-    
+
     let result = [];
     let lastIndex = 0;
-    
-    // Сортуємо сутності за їх позицією у тексті
+
+
     const sortedEntities = [...entities].sort((a, b) => {
       return text.indexOf(a.text) - text.indexOf(b.text);
     });
@@ -559,12 +559,12 @@ export default function Projects() {
       const startIdx = text.indexOf(entity.text, lastIndex);
       if (startIdx === -1) return;
 
-      // Додаємо звичайний текст перед сутністю
+
       if (startIdx > lastIndex) {
         result.push(text.substring(lastIndex, startIdx));
       }
 
-      // Додаємо підсвічену сутність з тултіпом
+
       result.push(
         <span key={idx} className={`ner-entity ner-${entity.type}`} data-label={entity.label}>
           {entity.text}
@@ -590,15 +590,15 @@ export default function Projects() {
           Ознайомтесь із нашими прикладними Digital Humanities проектами та інтерактивними інструментами аналізу просторово-часових даних.
         </p>
 
-        {/* Перемикач вкладок */}
+        
         <div className="tabs-container">
-          <button 
+          <button
             className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
             onClick={() => setActiveTab('map')}
           >
             Інтерактивна ГІС-мапа
           </button>
-          <button 
+          <button
             className={`tab-btn ${activeTab === 'database' ? 'active' : ''}`}
             onClick={() => setActiveTab('database')}
           >
@@ -607,7 +607,7 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* ВКЛАДКА 1: ІНТЕРАКТИВНА ГІС-МАПА */}
+      
       {activeTab === 'map' && (
         <div className="gis-map-section">
           <div className="gis-map-container">
@@ -616,9 +616,9 @@ export default function Projects() {
                 <span>Мапа книгодрукування XVI-XVIII ст.</span>
                 <span className="coordinate-grid-indicator">ГІС-сітка: Увімкнено</span>
               </div>
-              
+
               <svg className="gis-map-canvas" viewBox="0 0 800 450" width="100%">
-                {/* Координатна сітка */}
+                
                 <g className="grid-lines">
                   <line x1="0" y1="100" x2="800" y2="100" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="5,5" />
                   <line x1="0" y1="200" x2="800" y2="200" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="5,5" />
@@ -628,7 +628,7 @@ export default function Projects() {
                   <line x1="600" y1="0" x2="600" y2="450" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="5,5" />
                 </g>
 
-                {/* Координатні підписи */}
+                
                 <g className="grid-labels" style={{ fontSize: '10px', fill: 'var(--text-color)', opacity: 0.4 }}>
                   <text x="10" y="95">50° N</text>
                   <text x="10" y="195">48° N</text>
@@ -638,13 +638,13 @@ export default function Projects() {
                   <text x="590" y="440">36° E</text>
                 </g>
 
-                {/* Високоточний географічний контур України */}
-                <path 
-                  d="M 70,220 L 70,165 L 110,135 L 150,130 L 195,115 L 250,110 L 330,120 L 410,110 L 470,60 L 530,95 L 595,100 L 670,115 L 730,135 L 770,160 L 770,185 L 755,230 L 725,260 L 685,270 L 650,290 L 570,290 L 500,310 L 535,325 L 565,330 L 545,385 L 515,380 L 490,360 L 485,310 L 450,305 L 415,310 L 380,310 L 360,335 L 305,365 L 290,350 L 305,310 L 250,305 L 235,280 L 190,285 L 160,295 L 115,295 L 105,255 L 70,220 Z" 
+                
+                <path
+                  d="M 70,220 L 70,165 L 110,135 L 150,130 L 195,115 L 250,110 L 330,120 L 410,110 L 470,60 L 530,95 L 595,100 L 670,115 L 730,135 L 770,160 L 770,185 L 755,230 L 725,260 L 685,270 L 650,290 L 570,290 L 500,310 L 535,325 L 565,330 L 545,385 L 515,380 L 490,360 L 485,310 L 450,305 L 415,310 L 380,310 L 360,335 L 305,365 L 290,350 L 305,310 L 250,305 L 235,280 L 190,285 L 160,295 L 115,295 L 105,255 L 70,220 Z"
                   className="ukraine-outline"
                 />
 
-                {/* Мережеві зв'язки розповсюдження друку (відображаються тільки активні) */}
+                
                 <g className="network-links">
                   {currentYear >= 1576 && (
                     <line x1="140" y1="200" x2="230" y2="150" className="map-link-line" />
@@ -663,16 +663,16 @@ export default function Projects() {
                   )}
                 </g>
 
-                {/* Точки друкарень на карті */}
+                
                 {printingHubs.map((hub) => {
                   const isVisible = currentYear >= hub.founded;
                   const isActive = isVisible && (currentYear <= hub.closed || hub.closed === 1800);
-                  
+
                   if (!isVisible) return null;
 
                   return (
-                    <g 
-                      key={hub.id} 
+                    <g
+                      key={hub.id}
                       className={`map-node ${selectedHubId === hub.id ? 'selected' : ''} ${!isActive ? 'archived' : ''}`}
                       onClick={() => handleHubSelect(hub.id)}
                       style={{ cursor: 'pointer' }}
@@ -689,11 +689,11 @@ export default function Projects() {
                 })}
               </svg>
 
-              {/* ПОВЗУНОК ЧАСУ (TEMPORAL TIMELINE) */}
+              
               <div className="timeline-control-panel">
                 <div className="timeline-meta">
-                  <button 
-                    onClick={() => setIsPlaying(!isPlaying)} 
+                  <button
+                    onClick={() => setIsPlaying(!isPlaying)}
                     className={`play-btn ${isPlaying ? 'playing' : ''}`}
                     title={isPlaying ? "Пауза" : "Запустити хронологію"}
                   >
@@ -706,11 +706,11 @@ export default function Projects() {
 
                 <div className="timeline-slider-wrapper">
                   <span className="slider-label">1570</span>
-                  <input 
-                    type="range" 
-                    min="1570" 
-                    max="1800" 
-                    value={currentYear} 
+                  <input
+                    type="range"
+                    min="1570"
+                    max="1800"
+                    value={currentYear}
                     onChange={(e) => {
                       setCurrentYear(parseInt(e.target.value));
                       setIsPlaying(false);
@@ -719,7 +719,7 @@ export default function Projects() {
                   />
                   <span className="slider-label">1800</span>
                 </div>
-                
+
                 <div className="timeline-milestones">
                   <span className={`milestone ${currentYear >= 1573 ? 'passed' : ''}`}>1573</span>
                   <span className={`milestone ${currentYear >= 1576 ? 'passed' : ''}`}>1576</span>
@@ -729,7 +729,7 @@ export default function Projects() {
                 </div>
               </div>
 
-              {/* ЖИВИЙ ХРОНОЛОГІЧНИЙ ФІД ПОДІЙ */}
+              
               <div className="temporal-feed-container glassmorphism">
                 <div className="feed-header">
                   <h3>Хроніка подій періоду</h3>
@@ -754,14 +754,14 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* БІЧНА ПАНЕЛЬ ДЕТАЛЕЙ (GIS SIDEBAR) */}
+            
             <div className="gis-sidebar-details glassmorphism">
               {currentHub ? (
                 <>
                   <div className="sidebar-header">
                     <span className="status-badge active-badge">
-                      {currentYear >= currentHub.founded && (currentYear <= currentHub.closed || currentHub.closed === 1800) 
-                        ? 'Активний осередок' 
+                      {currentYear >= currentHub.founded && (currentYear <= currentHub.closed || currentHub.closed === 1800)
+                        ? 'Активний осередок'
                         : 'Історичний осередок'}
                     </span>
                     <h2>{currentHub.name}</h2>
@@ -779,7 +779,7 @@ export default function Projects() {
                         <span className="info-value">{currentHub.closed} р.</span>
                       </div>
                     )}
-                    
+
                     <div className="info-section">
                       <h3>Опис дослідження</h3>
                       <p>{currentHub.description}</p>
@@ -802,7 +802,7 @@ export default function Projects() {
                       <p className="dh-status-text">{currentHub.dhStatus}</p>
                     </div>
 
-                    {/* РЕВАЛЮЦІЙНИЙ РЕДАКТОР ТЕКСТУ ДЛЯ NLP-АНАЛІЗУ */}
+                    
                     <div className="info-section">
                       <h3>Текст пам'ятки для лінгвістичного аналізу</h3>
                       <textarea
@@ -816,10 +816,10 @@ export default function Projects() {
                       </p>
                     </div>
 
-                    {/* NLP АНАЛІЗАТОР */}
+                    
                     <div className="nlp-analysis-section">
-                      <button 
-                        onClick={runNlpAnalysis} 
+                      <button
+                        onClick={runNlpAnalysis}
                         className="nlp-run-btn"
                         disabled={analyzing}
                       >
@@ -836,8 +836,8 @@ export default function Projects() {
                       {showNlpResult && nlpResults && (
                         <div className="nlp-results animate-fade-in">
                           <h4>Результати обробки тексту:</h4>
+
                           
-                          {/* Статистика */}
                           <div className="nlp-stats-grid">
                             <div className="nlp-stat-card">
                               <span className="stat-label">Символів</span>
@@ -853,7 +853,7 @@ export default function Projects() {
                             </div>
                           </div>
 
-                          {/* Частина тексту з NER */}
+                          
                           <div className="nlp-ner-box">
                             <h5>Виділення сутностей (NER):</h5>
                             <p className="ner-text-rendered">
@@ -861,7 +861,7 @@ export default function Projects() {
                             </p>
                           </div>
 
-                          {/* Графік частотності */}
+                          
                           <div className="nlp-chart-box">
                             <h5>Частотність букв стародруку (%):</h5>
                             <div className="freq-chart">
@@ -870,8 +870,8 @@ export default function Projects() {
                                   <div key={idx} className="chart-bar-row">
                                     <span className="bar-char">«{item.char}»</span>
                                     <div className="bar-track">
-                                      <div 
-                                        className="bar-fill" 
+                                      <div
+                                        className="bar-fill"
                                         style={{ width: `${item.val * 7}%` }}
                                       ></div>
                                     </div>
@@ -898,13 +898,13 @@ export default function Projects() {
         </div>
       )}
 
-      {/* ВКЛАДКА 2: БАЗА ДОСЛІДНИЦЬКИХ ПРОЄКТІВ */}
+      
       {activeTab === 'database' && (
         <div className="projects-database-section">
-          
+
           {isAdmin && (
             <div className="admin-action-bar">
-              <Link 
+              <Link
                 to="/projects/create"
                 className="btn-create"
               >
@@ -913,15 +913,15 @@ export default function Projects() {
             </div>
           )}
 
-          {/* ПРЕМІУМ-ПОШУКОВИЙ ЦЕНТР */}
+          
           <div className="premium-search-wrapper glassmorphism">
             <div className="search-bar-container">
               <span className="search-icon">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </span>
-              <input 
-                type="text" 
-                placeholder="Пошук унікальних досліджень та цифрових корпусів..." 
+              <input
+                type="text"
+                placeholder="Пошук унікальних досліджень та цифрових корпусів..."
                 value={searchQuery}
                 onChange={handleSearch}
                 className="premium-search-input"
@@ -930,8 +930,8 @@ export default function Projects() {
                 <button onClick={clearSearch} className="clear-search-btn" title="Очистити пошук">×</button>
               )}
             </div>
+
             
-            {/* Категорійні швидкі теги */}
             <div className="quick-tags-container">
               <span className="tags-label">Швидкий фільтр:</span>
               <div className="quick-tags-list">
@@ -945,8 +945,8 @@ export default function Projects() {
                     >
                       {tag}
                       {!isDefault && (
-                        <span 
-                          className="remove-tag-x" 
+                        <span
+                          className="remove-tag-x"
                           onClick={(e) => handleRemoveProjectTag(e, tag)}
                           title="Видалити фільтр"
                         >
@@ -957,8 +957,8 @@ export default function Projects() {
                   );
                 })}
                 {showAddInput ? (
-                  <form 
-                    onSubmit={handleAddProjectTagInline} 
+                  <form
+                    onSubmit={handleAddProjectTagInline}
                     className="inline-add-form animate-fade-in"
                     onBlur={(e) => {
                       if (!e.currentTarget.contains(e.relatedTarget)) {
@@ -985,9 +985,9 @@ export default function Projects() {
                     <button type="button" className="inline-add-cancel" onClick={() => { setShowAddInput(false); setNewTagName(''); }} title="Скасувати">×</button>
                   </form>
                 ) : (
-                  <button 
-                    className="add-tag-btn" 
-                    onClick={() => setShowAddInput(true)} 
+                  <button
+                    className="add-tag-btn"
+                    onClick={() => setShowAddInput(true)}
                     title="Додати власний фільтр"
                   >
                     +
@@ -998,7 +998,7 @@ export default function Projects() {
           </div>
 
           {loading && <div className="loading">Завантаження бази проєктів...</div>}
-          
+
           {error && <div className="error">Помилка завантаження: {error}</div>}
 
           {!loading && !error && (
@@ -1011,7 +1011,7 @@ export default function Projects() {
                 <div className="projects-grid animate-fade-in">
                   {filteredProjects.map((project) => (
                     <div key={project.id} className="project-card-wrapper">
-                      <Card 
+                      <Card
                         title={project.title}
                         description={project.description}
                         imageUrl={project.imageUrl}
@@ -1033,7 +1033,7 @@ export default function Projects() {
                         )}
                         actions={isAdmin ? (
                           <>
-                            <Link 
+                            <Link
                               to={`/projects/edit/${project.id}`}
                               className="btn-edit"
                               style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
