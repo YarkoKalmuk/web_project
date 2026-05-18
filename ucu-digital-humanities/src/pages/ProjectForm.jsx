@@ -7,7 +7,7 @@ export default function ProjectForm() {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, user, loading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -29,13 +29,17 @@ export default function ProjectForm() {
   }, [isAdmin, authLoading, navigate]);
 
   useEffect(() => {
-    if (isEdit) {
-      setFetchingProject(true);
-      try {
-        const saved = localStorage.getItem('dh_projects');
-        if (saved) {
-          const projects = JSON.parse(saved);
-          const project = projects.find((p) => String(p.id) === String(id));
+    const fetchProject = async () => {
+      if (isEdit) {
+        setFetchingProject(true);
+        try {
+          const res = await fetch(`/api/projects/${id}`);
+          if (!res.ok) {
+            throw new Error('Проєкт не знайдено');
+          }
+          const data = await res.json();
+          const project = data.project;
+
           if (project) {
             const isStandardDirection = 
               project.direction === 'NLP та аналіз текстів' || 
@@ -56,15 +60,15 @@ export default function ProjectForm() {
           } else {
             setError('Проєкт не знайдено');
           }
-        } else {
-          setError('Проєкт не знайдено');
+        } catch (err) {
+          setError(err.message || 'Помилка завантаження проєкту');
+        } finally {
+          setFetchingProject(false);
         }
-      } catch (err) {
-        setError('Помилка завантаження проєкту');
-      } finally {
-        setFetchingProject(false);
       }
-    }
+    };
+
+    fetchProject();
   }, [id, isEdit]);
 
   const handleChange = (e) => {
@@ -87,42 +91,39 @@ export default function ProjectForm() {
     setLoading(true);
 
     try {
-      const saved = localStorage.getItem('dh_projects');
-      let projects = saved ? JSON.parse(saved) : [];
-
       const finalDirection = formData.direction === 'Інше (кастомний)' ? customDirection : formData.direction;
 
       if (!finalDirection || finalDirection.trim() === '') {
         throw new Error('Будь ласка, вкажіть напрямок проєкту');
       }
 
-      if (isEdit) {
-        projects = projects.map((p) => {
-          if (String(p.id) === String(id)) {
-            return {
-              ...p,
-              title: formData.title,
-              description: formData.description,
-              goal: formData.goal,
-              imageUrl: formData.imageUrl || 'https://picsum.photos/seed/dh_default/400/200',
-              direction: finalDirection,
-            };
-          }
-          return p;
-        });
-      } else {
-        const newProj = {
-          id: Date.now(),
-          title: formData.title,
-          description: formData.description,
-          goal: formData.goal,
-          imageUrl: formData.imageUrl || `https://picsum.photos/seed/${Date.now()}/400/200`,
-          direction: finalDirection,
-        };
-        projects = [newProj, ...projects];
+      const body = {
+        title: formData.title,
+        description: formData.description,
+        goal: formData.goal,
+        imageUrl: formData.imageUrl || (isEdit ? 'https://picsum.photos/seed/dh_default/400/200' : `https://picsum.photos/seed/${Date.now()}/400/200`),
+        direction: finalDirection
+      };
+
+      const url = isEdit ? `/api/projects/${id}` : '/api/projects';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      if (user) headers['x-user-id'] = user.id;
+
+      const res = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Не вдалося зберегти проєкт');
       }
 
-      localStorage.setItem('dh_projects', JSON.stringify(projects));
       navigate('/projects');
     } catch (err) {
       setError(err.message);

@@ -260,14 +260,31 @@ export default function Projects() {
   const [newTagName, setNewTagName] = useState('');
 
 
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const [deleteConfirmProject, setDeleteConfirmProject] = useState(null);
 
-  const handleProjectDelete = (projectId) => {
+  const handleProjectDelete = async (projectId) => {
     if (window.confirm('Ви впевнені, що хочете видалити цей проєкт?')) {
-      const updated = projects.filter(p => p.id !== projectId);
-      setProjects(updated);
-      localStorage.setItem('dh_projects', JSON.stringify(updated));
+      try {
+        const headers = {};
+        if (user) headers['x-user-id'] = user.id;
+
+        const res = await fetch(`/api/projects/${projectId}`, {
+          method: 'DELETE',
+          headers
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Не вдалося видалити проєкт');
+        }
+
+        const updated = projects.filter(p => p.id !== projectId);
+        setProjects(updated);
+        setFilteredProjects(updated);
+      } catch (err) {
+        alert(err.message);
+      }
     }
   };
 
@@ -336,61 +353,21 @@ export default function Projects() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const saved = localStorage.getItem('dh_projects');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-
-
-          const migrated = parsed.map((p, index) => {
-            let direction = p.direction;
-            if (!direction && p.extraInfo) {
-              direction = p.extraInfo.replace('Напрямок: ', '');
-            }
-            if (!direction) {
-              direction = index % 2 === 0 ? 'NLP та аналіз текстів' : 'ГІС та цифрові архіви';
-            }
-
-            let goal = p.goal;
-            if (!goal) {
-              const matchingTopic = dhResearchTopics.find(t => t.title === p.title);
-              goal = matchingTopic ? matchingTopic.goal : 'Створення відкритих цифрових ресурсів та засобів аналізу.';
-            }
-
-            return {
-              ...p,
-              direction,
-              goal
-            };
-          });
-
-          setProjects(migrated);
-          setFilteredProjects(migrated);
-          localStorage.setItem('dh_projects', JSON.stringify(migrated));
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=8');
+        const response = await fetch('/api/projects');
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Не вдалося завантажити проєкти з сервера');
         }
         const data = await response.json();
 
-        const formattedData = data.map((item, index) => {
-          const dhTopic = dhResearchTopics[index % dhResearchTopics.length];
-          return {
-            id: item.id,
-            title: dhTopic.title,
-            description: dhTopic.desc,
-            imageUrl: dhTopic.img,
-            direction: index % 2 === 0 ? 'NLP та аналіз текстів' : 'ГІС та цифрові архіви',
-            goal: dhTopic.goal
-          };
-        });
+        setProjects(data.projects);
+        setFilteredProjects(data.projects);
 
-        setProjects(formattedData);
-        setFilteredProjects(formattedData);
-        localStorage.setItem('dh_projects', JSON.stringify(formattedData));
+        const defaultTags = ['Усі', 'NLP та аналіз текстів', 'ГІС та цифрові архіви'];
+        const uniqueDirections = Array.from(new Set(data.projects.map(p => p.direction).filter(Boolean)));
+        setProjectTags(prev => {
+          const combined = new Set([...prev, ...defaultTags, ...uniqueDirections]);
+          return Array.from(combined);
+        });
       } catch (err) {
         setError(err.message);
       } finally {

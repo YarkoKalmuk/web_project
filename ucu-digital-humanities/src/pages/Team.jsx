@@ -1,49 +1,60 @@
-import Card from '../components/Card/Card';
+import './Team.css';
 
 export default function Team() {
   const teamMembers = [
     {
-      name: "Yulian Zaiats",
-      role: "CEO",
-      bio: "Тут можна описати більше про діяльність",
+      name: "Юліан Заяць",
+      role: "Lead Frontend Engineer & UX Designer",
+      bio: "Спеціалізується на побудові високоінтерактивних інтерфейсів, ГІС-візуалізаціях та NLP-інструментах. Відповідає за преміальну естетику та плавність користувацького досвіду.",
       image: "/team/Yulian_Zaiats.png"
     },
     {
-      name: "Yaropolk Kalmuk",
-      role: "CEO",
-      bio: "Тут можна описати більше про діяльність",
+      name: "Ярополк Кальмук",
+      role: "Chief Full-Stack Engineer & Database Architect",
+      bio: "Проєктує надійні серверні рішення, API та архітектуру баз даних SQLite. Забезпечує цілісність, швидкість та стабільність обміну даними між усіма вузлами системи.",
       image: "/team/Yaropolk_Kalmuk.png"
     },
     {
-      name: "Nazar Mykolaychuk",
-      role: "CEO",
-      bio: "Тут можна описати більше про діяльність",
+      name: "Назар Миколайчук",
+      role: "NLP & Computational Linguistics Specialist",
+      bio: "Керує розробкою модулів обробки природної мови, аналізу стародруків та морфологічного маркування. Створює інтелектуальні алгоритми розпізнавання сутностей.",
       image: "/team/Nazar_Mykolaychuk.png"
     },
     {
-      name: "Marko Zenon",
-      role: "CEO",
-      bio: "Тут можна описати більше про діяльність",
+      name: "Марко Зенон",
+      role: "GIS Coordinator & Archival Researcher",
+      bio: "Займається збором просторових даних, оцифруванням історичних джерел та картографічним аналізом. Досліджує шляхи книговидання XVI-XVIII ст.",
       image: "/team/Marko_Zenon.png"
     }
   ];
 
   return (
     <div className="team-page">
-      <h1 className="section-title">Наша команда</h1>
-      <p className="team-description">
-        Знайомтеся з фахівцями, які роблять цифрову гуманітаристику можливою.
-      </p>
+      <div className="team-header">
+        <h1>Наша команда</h1>
+        <p>
+          Знайомтеся з розробниками та дослідниками, які роблять цифрову гуманітаристику та комп'ютерну лінгвістику реальною.
+        </p>
+      </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+      <div className="team-grid">
         {teamMembers.map((member, index) => (
-          <div key={index} style={{ display: 'flex' }}>
-            <Card 
-              title={member.name}
-              description={member.bio}
-              imageUrl={member.image}
-              extraInfo={`Посада: ${member.role}`}
-            />
+          <div key={index} className="team-card">
+            <div className="team-avatar-wrapper">
+              <img 
+                src={member.image} 
+                alt={member.name} 
+                className="team-avatar"
+                onError={(e) => {
+                  e.target.src = `https://picsum.photos/seed/dh_team_${index}/150/150`;
+                }}
+              />
+            </div>
+            <div className="team-info">
+              <h2 className="team-name">{member.name}</h2>
+              <span className="team-role-badge">{member.role}</span>
+              <p className="team-bio">{member.bio}</p>
+            </div>
           </div>
         ))}
       </div>

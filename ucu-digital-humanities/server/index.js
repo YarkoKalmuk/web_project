@@ -220,6 +220,143 @@ app.get('/api/messages', (req, res) => {
   }
 });
 
+app.get('/api/projects', (req, res) => {
+  try {
+    const projects = db.prepare('SELECT * FROM projects ORDER BY created_at DESC').all();
+    const mapped = projects.map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      goal: p.goal,
+      imageUrl: p.image_url,
+      direction: p.direction
+    }));
+    res.json({ projects: mapped });
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});
+
+app.get('/api/projects/:id', (req, res) => {
+  try {
+    const project = db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({
+      project: {
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        goal: project.goal,
+        imageUrl: project.image_url,
+        direction: project.direction
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching project:', error);
+    res.status(500).json({ error: 'Failed to fetch project' });
+  }
+});
+
+app.post('/api/projects', (req, res) => {
+  const userId = req.headers['x-user-id'];
+  const user = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+
+  const { title, description, goal, imageUrl, direction } = req.body;
+  if (!title || !description || !goal || !direction) {
+    return res.status(400).json({ error: 'Title, description, goal, and direction are required' });
+  }
+
+  try {
+    const result = db.prepare(
+      'INSERT INTO projects (title, description, goal, image_url, direction) VALUES (?, ?, ?, ?, ?)'
+    ).run(title, description, goal, imageUrl || null, direction);
+
+    const project = db.prepare('SELECT * FROM projects WHERE id = ?').get(result.lastInsertRowid);
+    res.status(201).json({
+      project: {
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        goal: project.goal,
+        imageUrl: project.image_url,
+        direction: project.direction
+      }
+    });
+  } catch (error) {
+    console.error('Error creating project:', error);
+    res.status(500).json({ error: 'Failed to create project' });
+  }
+});
+
+app.put('/api/projects/:id', (req, res) => {
+  const userId = req.headers['x-user-id'];
+  const user = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+
+  const existing = db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
+  if (!existing) {
+    return res.status(404).json({ error: 'Project not found' });
+  }
+
+  const { title, description, goal, imageUrl, direction } = req.body;
+  try {
+    db.prepare(
+      'UPDATE projects SET title = ?, description = ?, goal = ?, image_url = ?, direction = ? WHERE id = ?'
+    ).run(
+      title || existing.title,
+      description || existing.description,
+      goal || existing.goal,
+      imageUrl !== undefined ? imageUrl : existing.image_url,
+      direction || existing.direction,
+      req.params.id
+    );
+
+    const project = db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
+    res.json({
+      project: {
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        goal: project.goal,
+        imageUrl: project.image_url,
+        direction: project.direction
+      }
+    });
+  } catch (error) {
+    console.error('Error updating project:', error);
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+});
+
+app.delete('/api/projects/:id', (req, res) => {
+  const userId = req.headers['x-user-id'];
+  const user = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+
+  const existing = db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
+  if (!existing) {
+    return res.status(404).json({ error: 'Project not found' });
+  }
+
+  try {
+    db.prepare('DELETE FROM projects WHERE id = ?').run(req.params.id);
+    res.json({ message: 'Project deleted' });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
