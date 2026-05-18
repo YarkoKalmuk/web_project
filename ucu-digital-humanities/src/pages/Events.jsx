@@ -63,16 +63,19 @@ export default function Events() {
 
   const filteredEvents = events.filter(event => {
     if (selectedTag === 'Усі') return true;
-    
-    // Default month filters
-    const eventDate = new Date(event.date);
-    const month = eventDate.getMonth(); // 4 = May, 5 = June, 6 = July
-    if (selectedTag === 'Травень') return month === 4;
-    if (selectedTag === 'Червень') return month === 5;
-    if (selectedTag === 'Липень') return month === 6;
 
-    // Custom dynamic filters (match on title, description, or date string)
+    const monthMap = {
+      'січень': '-01-', 'лютий': '-02-', 'березень': '-03-', 'квітень': '-04-',
+      'травень': '-05-', 'червень': '-06-', 'липень': '-07-', 'серпень': '-08-',
+      'вересень': '-09-', 'жовтень': '-10-', 'листопад': '-11-', 'грудень': '-12-'
+    };
+
     const lowerTag = selectedTag.toLowerCase();
+
+    if (monthMap[lowerTag]) {
+      return event.date.includes(monthMap[lowerTag]);
+    }
+
     return (
       event.title.toLowerCase().includes(lowerTag) ||
       event.description.toLowerCase().includes(lowerTag) ||
@@ -325,7 +328,7 @@ export default function Events() {
       <div className="past-events-gallery-section">
         <h2 className="section-title" style={{ marginTop: '2rem' }}>Фото з минулих подій</h2>
         <div className="photo-gallery">
-          {Array.from({ length: 21 }, (_, i) => i + 1).map((num) => (
+          {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
             <div key={num} className="gallery-item" onClick={() => setSelectedPhoto(num)}>
               <img src={`/event_photos/${num}.jpg`} alt={`Past event ${num}`} loading="lazy" />
             </div>

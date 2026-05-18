@@ -75,7 +75,7 @@ body.dark .events-toolbar .search-input:focus {
   box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
 
-/* ── Events grid ── */
+/* Events grid */
 .events-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -87,7 +87,7 @@ body.dark .events-toolbar .search-input:focus {
   display: flex;
 }
 
-/* ── Empty state ── */
+/* Empty state */
 .events-empty {
   text-align: center;
   padding: 4rem 2rem;
@@ -98,7 +98,7 @@ body.dark .events-toolbar .search-input:focus {
   opacity: 0.8;
 }
 
-/* ── Delete confirm ── */
+/* Delete confirm */
 .delete-confirm {
   display: flex;
   gap: 0.5rem;
@@ -121,7 +121,7 @@ body.dark .events-toolbar .search-input:focus {
   font-size: 0.8rem;
 }
 
-/* ── Pagination ── */
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
@@ -363,7 +363,7 @@ body.dark .events-page .error {
   }
 }
 
-/* 🔍 ПРЕМІУМ-ПОШУКОВИЙ ЦЕНТР ДЛЯ ПОДІЙ */
+/* Premium search */
 .events-page .premium-search-wrapper {
   border: 1px solid var(--border-color);
   border-radius: var(--radius);

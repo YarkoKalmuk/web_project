@@ -122,7 +122,7 @@ if (eventCount.count === 0) {
   for (const event of seedEvents) {
     insertEvent.run(event.title, event.description, event.date, event.image_url, event.location);
   }
-  console.log('✅ Seeded 6 default events');
+  console.log('Seeded 6 default events');
 }
 
 export default db;

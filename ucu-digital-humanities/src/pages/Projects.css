@@ -5,7 +5,7 @@
 }
 
 .projects-header h1 {
-  color: #ffffff;
+  color: #000000;
   margin-bottom: 0.75rem;
 }
 
@@ -60,7 +60,7 @@ body.dark .tab-btn.active {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* 🗺️ Компоновка ГІС секції (2-панельний Grid) */
+/* Компоновка ГІС секції (2-панельний Grid) */
 .gis-map-section {
   width: 100%;
   animation: fadeIn 0.6s ease-out forwards;
@@ -73,7 +73,7 @@ body.dark .tab-btn.active {
   align-items: start;
 }
 
-/* 🗺️ Мапа та її рамка */
+/* Мапа та її рамка */
 .map-canvas-wrapper {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -121,7 +121,7 @@ body.dark .gis-map-canvas {
   background-color: rgba(15, 23, 42, 0.3);
 }
 
-/* 🗺️ Контур України та сітка */
+/* Контур України та сітка */
 .ukraine-outline {
   fill: rgba(59, 130, 246, 0.03);
   stroke: var(--border-color);
@@ -134,7 +134,7 @@ body.dark .ukraine-outline {
   stroke: #1e293b;
 }
 
-/* 🟢 Анімовані потоки даних (Network Links) */
+/* Network Links */
 @keyframes flow-dash {
   to {
     stroke-dashoffset: -20;
@@ -150,79 +150,101 @@ body.dark .ukraine-outline {
   transition: opacity 0.5s ease;
 }
 
-/* 📍 Стилі вузлів мапи (City nodes) */
+/* City nodes */
 .map-node {
-  transition: transform 0.3s ease;
+  transition: opacity 0.3s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none !important;
+}
+
+
+/* Стан при кліку (активний) або ховері */
+.map-node:active,
+.map-node.selected,
+.map-node:hover {
+  transform: none !important;
 }
 
 .map-node .main-node-circle {
   fill: var(--primary);
   stroke: #ffffff;
   stroke-width: 2;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px var(--primary);
+  transition: fill 0.3s ease, stroke 0.3s ease; 
 }
 
 body.dark .map-node .main-node-circle {
   stroke: var(--card-bg);
 }
 
+/* Коли мітка обрана — вона стає зеленою */
 .map-node.selected .main-node-circle {
-  fill: #10b981; /* Green when selected */
-  transform: scale(1.3);
+  fill: #10b981; 
 }
 
-/* 🟢 Пульсуюче коло маркерів */
-@keyframes map-pulse {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(0.9);
-    opacity: 0;
-  }
+/* Текст біля мітки фіксуємо, щоб клік проходив крізь нього на саму точку */
+.map-node .node-text {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-color);
+  filter: drop-shadow(0px 1px 2px var(--card-bg));
+  transition: fill 0.3s ease;
+  pointer-events: none;
+  user-select: none;
 }
 
+.map-node:hover .main-node-circle {
+  stroke: #10b981; 
+}
+
+/* Вузли, які закриті для цього року */
+.map-node.archived {
+  opacity: 1 !important; /* Робимо мітку повністю яскравою */
+}
+
+.map-node.archived .main-node-circle {
+  fill: var(--primary) !important; /* Повертаємо їй фірмовий синій колір */
+}
+
+.map-node.archived,
+.map-node.dead {
+  opacity: 1 !important;
+}
+
+.map-node.archived .main-node-circle,
+.map-node.dead .main-node-circle {
+  fill: var(--primary) !important;
+}
+
+.map-node.archived .pulse-circle,
+.map-node.dead .pulse-circle {
+  display: none;
+}
+
+/* Безпечна пульсація для активних міток (без чорних плям) */
 .pulse-circle {
   fill: var(--primary);
-  opacity: 0.3;
-  transform-origin: center;
-  animation: map-pulse 2s infinite ease-out;
+  opacity: 0.4;
+  animation: svg-pulse 2s infinite ease-out;
 }
 
 .map-node.selected .pulse-circle {
   fill: #10b981;
 }
 
-.map-node .node-text {
-  font-size: 11px;
-  font-weight: 600;
-  fill: var(--text-color);
-  filter: drop-shadow(0px 1px 2px var(--card-bg));
-  transition: all 0.3s ease;
+@keyframes svg-pulse {
+  0% {
+    r: 7px;
+    opacity: 0.7;
+  }
+  100% {
+    r: 22px;
+    opacity: 0;
+  }
 }
 
-.map-node:hover .main-node-circle {
-  transform: scale(1.2);
-}
 
-/* Вузли, які закриті для цього року */
-.map-node.archived {
-  opacity: 0.45;
-}
-.map-node.archived .main-node-circle {
-  fill: #64748b;
-}
-.map-node.archived .pulse-circle {
-  display: none;
-}
-
-/* 🎚️ ПОВЗУНОК ЧАСУ (Timeline Panel) */
+/* ПОВЗУНОК ЧАСУ (Timeline Panel) */
 .timeline-control-panel {
   margin-top: 1.5rem;
   background-color: rgba(241, 245, 249, 0.5);
